@@ -1,9 +1,29 @@
-"""Provides an array class which can be enlarged."""
+"""Provides array types which can be enlarged after creation."""
 
 import numpy as np
 
 
 class GrowableArray(object):
+
+    """An array which can be enlarged after creation.
+
+    Though this is not a subclass of numpy.ndarray, it implements the same
+    interface.
+
+    :type shape: int or tuple of int
+    :param shape: Initial shape of the created empty array.
+    :type dtype: data-type, optional
+    :param data-type dtype: Desired output data-type.
+    :type order: {'C', 'F'}, optional
+    :param order: Whether to store multi-dimensional data in C (row-major)
+        or Fortran (column-major) order in memory.
+    :type buffer_shape: int or tuple of int, optional
+    :param buffer_shape: Initial shape of the buffer in the background. As long
+        as the array shape stays below the buffer shape no new memory has to
+        reallocated.
+
+    """
+
     MARGIN_FACTOR = 2
 
     def __init__(self, shape, dtype=float, order='C', buffer_shape=None):
@@ -32,6 +52,12 @@ class GrowableArray(object):
         return self._view.__len__()
 
     def grow_by(self, amount):
+        """Grow the array.
+
+        :type amount: int or tuple of int
+        :param amount: Amount by which each dimension will be enlarged.
+
+        """
         amount = np.asarray(amount, dtype=int)
         assert np.all(amount > 0)
         new_shape = np.asarray(self.shape, dtype=int) + amount
