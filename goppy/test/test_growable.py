@@ -12,12 +12,10 @@ class TestGrowableArray(object):
     def test_creation_of_array(self):
         shape = (2, 3, 4)
         dtype = np.dtype('int')
-        order = 'C'
-        garray = GrowableArray(shape, dtype, order)
+        garray = GrowableArray(shape, dtype)
 
         assert_that(garray.shape, is_(shape))
         assert_that(garray.dtype, is_(dtype))
-        assert_that(garray.flags['C'], is_(True))
 
     def test_array_access(self):
         garray = GrowableArray((2, 2))

@@ -9,8 +9,11 @@ import numpy as np
 # the grow_by function will throw an exception.
 
 class GrowableArray(object):
+    MARGIN_FACTOR = 2
+
     def __init__(self, shape, dtype=float, order='C'):
-        self._data = np.empty(shape, dtype, order)
+        self._data = np.empty(
+            self.MARGIN_FACTOR * np.asarray(shape, dtype=int), dtype, order)
         self._view = self.__get_view_for_shape(self._data, shape)
 
     @staticmethod
@@ -31,5 +34,6 @@ class GrowableArray(object):
         assert np.all(amount > 0)
         new_shape = np.asarray(self.shape, dtype=int) + amount
         self._view = None
-        self._data.resize(new_shape)
+        if np.any(self._data.shape < new_shape):
+            self._data.resize(self.MARGIN_FACTOR * new_shape)
         self._view = self.__get_view_for_shape(self._data, new_shape)
