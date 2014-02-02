@@ -25,6 +25,12 @@ class GrowableArray(object):
     def __setitem__(self, key, value):
         self._view.__setitem__(key, value)
 
+    def __delitem__(self, key):
+        self._view.__delitem__(key)
+
+    def __len__(self):
+        return self._view.__len__()
+
     def grow_by(self, amount):
         amount = np.asarray(amount, dtype=int)
         assert np.all(amount > 0)

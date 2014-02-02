@@ -59,3 +59,12 @@ class TestGrowableArray(object):
     def test_can_set_initial_buffer_size(self):
         garray = GrowableArray((3,), buffer_shape=(77,))
         assert_that(garray.base.shape, is_((77,)))
+
+    def test_has_length(self):
+        garray = GrowableArray((4, 2))
+        assert_that(len(garray), is_(4))
+
+    @raises(ValueError)
+    def test_cannot_delete_array_elements(self):
+        garray = GrowableArray((3,))
+        del garray[1]
