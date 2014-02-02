@@ -3,11 +3,6 @@
 import numpy as np
 
 
-# TODO
-# ok, plan is no to return a class derived from ndarray which is able to detect
-# whether it is the originally created instance or a view. If it is a view
-# the grow_by function will throw an exception.
-
 class GrowableArray(object):
     MARGIN_FACTOR = 2
 
