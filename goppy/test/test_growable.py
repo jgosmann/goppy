@@ -56,4 +56,6 @@ class TestGrowableArray(object):
         expected = [4, 4, 4]
         assert_array_equal(garray + a, expected)
 
-    # setting buffer size
+    def test_can_set_initial_buffer_size(self):
+        garray = GrowableArray((3,), buffer_shape=(77,))
+        assert_that(garray.base.shape, is_((77,)))

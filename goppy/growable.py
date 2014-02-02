@@ -11,9 +11,10 @@ import numpy as np
 class GrowableArray(object):
     MARGIN_FACTOR = 2
 
-    def __init__(self, shape, dtype=float, order='C'):
-        self._data = np.empty(
-            self.MARGIN_FACTOR * np.asarray(shape, dtype=int), dtype, order)
+    def __init__(self, shape, dtype=float, order='C', buffer_shape=None):
+        if buffer_shape is None:
+            buffer_shape = self.MARGIN_FACTOR * np.asarray(shape, dtype=int)
+        self._data = np.empty(buffer_shape, dtype, order)
         self._view = self.__get_view_for_shape(self._data, shape)
 
     @staticmethod
