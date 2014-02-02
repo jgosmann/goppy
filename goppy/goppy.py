@@ -14,6 +14,14 @@ class SquaredExponentialKernel(object):
         d = self._calc_distance(x1, x2)
         return self.variance * np.exp(-0.5 * d / self.lengthscales ** 2)
 
+    def diag(self, x1, x2):
+        if x1 is x2:
+            return self.variance * np.ones(len(x1))
+
+        d = -2 * np.einsum('ij,ij->i', x1, x2) + (
+            np.sum(np.square(x1), 1) + np.sum(np.square(x2), 1))
+        return self.variance * np.exp(-0.5 * d / self.lengthscale ** 2)
+
     def _calc_distance(self, x1, x2):
         return -2 * np.dot(x1, x2.T) + (
             np.sum(np.square(x1), 1)[:, None] +
@@ -37,8 +45,16 @@ class OnlineGP(object):
             self.kernel(x, x) + np.eye(len(x)) * self.noise_var))
         self.K_inv = np.dot(self.L_inv.T, self.L_inv)
 
+    # TODO caching
     def predict(self, x):
         K_new_vs_old = self.kernel(x, self.x_train)
-
         svs = np.dot(self.K_inv, self.y_train)
         return np.dot(K_new_vs_old, svs)
+
+    def predict_mse(self, x):
+        K_new_vs_old = self.kernel(x, self.x_train)
+        mse_svs = np.dot(self.K_inv, K_new_vs_old.T)
+        return np.maximum(
+            self.noise_var,
+            self.noise_var + self.kernel.diag(x, x) - np.einsum(
+                'ij,ji->i', K_new_vs_old, mse_svs))
