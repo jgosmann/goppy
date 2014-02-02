@@ -2,6 +2,7 @@
 
 from hamcrest import assert_that, equal_to, instance_of, is_, is_not, \
     same_instance
+from nose.tools import raises
 import numpy as np
 from numpy.testing import assert_array_equal
 
@@ -22,15 +23,6 @@ class TestGrowableArray(object):
         garray[:, :] = 3
         assert_array_equal(garray, [[3, 3], [3, 3]])
 
-    #def test_view_casting(self):
-        #array = np.array([[1, 2], [3, 4]])
-        #garray = array.view(GrowableArray)
-        #assert_that(garray, is_(instance_of(GrowableArray)))
-        #assert_array_equal(garray, array)
-
-    #def test_view_casted_cannot_be_grown(self):
-        #pass  # FIXME
-
     def test_new_from_template(self):
         garray = GrowableArray((3,))
         garray[:] = [1, 2, 3]
@@ -39,8 +31,12 @@ class TestGrowableArray(object):
         assert_that(new_one, is_not(same_instance(garray)))
         assert_array_equal(new_one, [2, 3])
 
+    @raises(AttributeError)
     def test_new_from_template_cannot_be_grown(self):
-        pass  # FIXME
+        garray = GrowableArray((3,))
+        garray[:] = [1, 2, 3]
+        new_one = garray[1:]
+        new_one.grow_by((1,))
 
     def test_can_grow_array(self):
         garray = GrowableArray((2, 2))
@@ -48,11 +44,16 @@ class TestGrowableArray(object):
         garray[:, :] = 1
         assert_array_equal(garray, np.ones((12, 22)))
 
-    def test_invalid_assignment(self):
-        pass  # FIXME
+    def test_can_be_used_in_ufunc(self):
+        garray = GrowableArray((3,))
+        garray[:] = [1, 2, 3]
+        assert_that(np.sum(garray), is_(6))
 
-    # enlarge view casted array
-    # enlarge new from template
+    def test_can_be_used_in_array_calculation(self):
+        a = np.array([3, 2, 1])
+        garray = GrowableArray((3,))
+        garray[:] = [1, 2, 3]
+        expected = [4, 4, 4]
+        assert_array_equal(garray + a, expected)
 
-    # can be enlarged
     # setting buffer size
