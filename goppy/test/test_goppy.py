@@ -39,8 +39,9 @@ class TestOnlineGP(object):
 
     @staticmethod
     def _assert_prediction_matches_data(gp, data):
-        assert_almost_equal(gp.predict(data['X']), data['Y'])
-        assert_almost_equal(gp.predict_mse(data['X']), data['mse'])
+        pred = gp.predict(data['X'], what=['mean', 'mse'])
+        assert_almost_equal(pred['mean'], data['Y'])
+        assert_almost_equal(pred['mse'], data['mse'])
 
     #def test_evaluates_mse(self):
         #x = np.array([[-4, -2, -0.5, 0, 2]]).T

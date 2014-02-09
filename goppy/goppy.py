@@ -34,27 +34,45 @@ class OnlineGP(object):
         self.noise_var = noise_var
         self.x_train = None
         self.y_train = None
-        self.L_inv = None
-        self.K_inv = None
+        self.inv_chol = None
+        self.__inv_cov_matrix = None
+
+    def _get_inv_cov_matrix(self):
+        if self.__inv_cov_matrix is None:
+            self.__inv_cov_matrix = np.dot(self.inv_chol.T, self.inv_chol)
+        return self.__inv_cov_matrix
+
+    def _del_inv_cov_matrix(self):
+        self.__inv_cov_matrix = None
+
+    inv_cov_matrix = property(_get_inv_cov_matrix, fdel=_del_inv_cov_matrix)
 
     def fit(self, x, y):
         self.x_train = x
         self.y_train = y
-        # FIXME store only L_inv or K_inv
-        self.L_inv = inv(cholesky(
+        self.inv_chol = inv(cholesky(
             self.kernel(x, x) + np.eye(len(x)) * self.noise_var))
-        self.K_inv = np.dot(self.L_inv.T, self.L_inv)
+        del self.inv_cov_matrix
 
-    # TODO caching
-    def predict(self, x):
-        K_new_vs_old = self.kernel(x, self.x_train)
-        svs = np.dot(self.K_inv, self.y_train)
-        return np.dot(K_new_vs_old, svs)
+    def predict(self, x, what=['mean']):
+        pred = {}
 
-    def predict_mse(self, x):
-        K_new_vs_old = self.kernel(x, self.x_train)
-        mse_svs = np.dot(self.K_inv, K_new_vs_old.T)
+        input_vs_train_dist = self.kernel(x, self.x_train)
+
+        if 'mean' in what:
+            pred['mean'] = self._calc_mean_prediction(input_vs_train_dist)
+        if 'mse' in what:
+            pred['mse'] = self._calc_mse_prediction(x, input_vs_train_dist)
+
+        return pred
+
+    def _calc_mean_prediction(self, input_vs_train_dist):
+        svs = np.dot(self.inv_cov_matrix, self.y_train)
+        return np.dot(input_vs_train_dist, svs)
+
+    def _calc_mse_prediction(self, x, input_vs_train_dist):
+        svs = np.dot(self.inv_cov_matrix, input_vs_train_dist.T)
         return np.maximum(
             self.noise_var,
             self.noise_var + self.kernel.diag(x, x) - np.einsum(
-                'ij,ji->i', K_new_vs_old, mse_svs))
+                'ij,ji->i', input_vs_train_dist, svs))
