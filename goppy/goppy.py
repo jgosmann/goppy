@@ -3,6 +3,8 @@
 import numpy as np
 from numpy.linalg import cholesky, inv
 
+from .growable import GrowableArray
+
 
 # TODO unit test this class
 class SquaredExponentialKernel(object):
@@ -36,6 +38,7 @@ class OnlineGP(object):
         self.y_train = None
         self.inv_chol = None
         self.__inv_cov_matrix = None
+        self.trained = False
 
     def _get_inv_cov_matrix(self):
         if self.__inv_cov_matrix is None:
@@ -48,13 +51,62 @@ class OnlineGP(object):
     inv_cov_matrix = property(_get_inv_cov_matrix, fdel=_del_inv_cov_matrix)
 
     def fit(self, x, y):
-        self.x_train = x
-        self.y_train = y
-        self.inv_chol = inv(cholesky(
+        x = np.asarray(x)
+        y = np.asarray(y)
+        # FIXME expected shape
+        self.x_train = GrowableArray(x.shape)
+        self.y_train = GrowableArray(y.shape)
+        self.x_train[:, :] = x
+        self.y_train[:, :] = y
+        self.inv_chol = GrowableArray((x.shape[0], x.shape[0]))
+        self.inv_chol[:, :] = inv(cholesky(
             self.kernel(x, x) + np.eye(len(x)) * self.noise_var))
         del self.inv_cov_matrix
+        self.trained = True
 
-    def predict(self, x, what=['mean']):
+    def add(self, x, y):
+        # TODO refactoring of variable names in this function
+        # TODO length check, trained unit test
+        #if len(x) <= 0:
+            #return
+
+        x = np.asarray(x)
+        y = np.asarray(y)
+
+        if not self.trained:
+            self.fit(x, y)
+            return
+
+        input_vs_train_dist = self.kernel(x, self.x_train)
+        B = np.dot(input_vs_train_dist, self.inv_chol.T)
+        CC_T = self.kernel(x, x) + np.eye(len(x)) * self.noise_var - \
+            np.dot(B, B.T)
+        diag_indices = np.diag_indices_from(CC_T)
+        CC_T[diag_indices] = np.maximum(self.noise_var, CC_T[diag_indices])
+
+        self.x_train.grow_by((len(x), 0))
+        self.y_train.grow_by((len(y), 0))
+        self.x_train[-len(x):, :] = x
+        self.y_train[-len(y):, :] = y
+
+        #try:
+        C_inv = inv(cholesky(CC_T))
+        #except linalg.LinAlgError:
+            #warnings.warn(
+                #'New submatrix of covariance matrix singular. '
+                #'Retraining on all data.', NumericalStabilityWarning)
+            #self._refit()
+            #return
+
+        l = len(self.inv_chol)
+        self.inv_chol.grow_by((len(x), len(x)))
+        self.inv_chol[:l, l:] = 0.0
+        self.inv_chol[l:, :l] = -np.dot(
+            np.dot(C_inv, B), self.inv_chol[:l, :l])
+        self.inv_chol[l:, l:] = C_inv
+        del self.inv_cov_matrix
+
+    def predict(self, x, what=('mean',)):
         pred = {}
 
         input_vs_train_dist = self.kernel(x, self.x_train)

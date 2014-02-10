@@ -13,12 +13,12 @@ class TestOnlineGP(object):
         {
             'training': {
                 'X': np.array([[-4, -2, -0.5, 0, 2]]).T,
-                'Y': np.array([[-2, 0, 1, 2, -1]]).T
+                'Y': np.array([[-2, 0, 1, 2, -1]]).T,
+                'kernel': SquaredExponentialKernel([1.0]),
+                'noise_var': 0.5
             },
             'tests': [
                 {
-                    'kernel': SquaredExponentialKernel([1.0]),
-                    'noise_var': 0.5,
                     'X': np.array([[-3, 1]]).T,
                     'Y': np.array([[-0.78511166, 0.37396387]]).T,
                     'mse': [1.04585738, 1.04888027]
@@ -33,25 +33,25 @@ class TestOnlineGP(object):
                 yield self.check_prediction, dataset['training'], test
 
     def check_prediction(self, training, test):
-        gp = OnlineGP(test['kernel'], test['noise_var'])
+        gp = OnlineGP(training['kernel'], training['noise_var'])
         gp.fit(training['X'], training['Y'])
         self._assert_prediction_matches_data(gp, test)
+
+    def test_adding_data_online(self):
+        for dataset in self.datasets:
+            training = dataset['training']
+            gp = OnlineGP(training['kernel'], training['noise_var'])
+            for x, y in zip(training['X'], training['Y']):
+                gp.add([x], [y])
+
+            for test in dataset['tests']:
+                yield self._assert_prediction_matches_data, gp, test
 
     @staticmethod
     def _assert_prediction_matches_data(gp, data):
         pred = gp.predict(data['X'], what=['mean', 'mse'])
         assert_almost_equal(pred['mean'], data['Y'])
         assert_almost_equal(pred['mse'], data['mse'])
-
-    #def test_evaluates_mse(self):
-        #x = np.array([[-4, -2, -0.5, 0, 2]]).T
-        #y = np.array([[-2, 0, 1, 2, -1]]).T
-        #self.gp.fit(x, y)
-
-        #x_star = np.array([[-3, 1]]).T
-        #expected = [1.04585738, 1.04888027]
-        #unused, mse = self.gp.predict(x_star, eval_MSE=True)
-        #assert_almost_equal(mse, expected)
 
     #def test_allows_adding_new_datapoints_online(self):
         #xs = [-4, -2, -0.5, 0, 2]
