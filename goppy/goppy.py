@@ -65,7 +65,6 @@ class OnlineGP(object):
         self.trained = True
 
     def add(self, x, y):
-        # TODO refactoring of variable names in this function
         # TODO length check, trained unit test
         #if len(x) <= 0:
             #return
@@ -78,19 +77,19 @@ class OnlineGP(object):
             return
 
         input_vs_train_dist = self.kernel(x, self.x_train)
-        B = np.dot(input_vs_train_dist, self.inv_chol.T)
-        CC_T = self.kernel(x, x) + np.eye(len(x)) * self.noise_var - \
-            np.dot(B, B.T)
-        diag_indices = np.diag_indices_from(CC_T)
-        CC_T[diag_indices] = np.maximum(self.noise_var, CC_T[diag_indices])
+        proj = np.dot(input_vs_train_dist, self.inv_chol.T)
+        covmat = self.kernel(x, x) + np.eye(len(x)) * self.noise_var - \
+            np.dot(proj, proj.T)
+        diag_indices = np.diag_indices_from(covmat)
+        covmat[diag_indices] = np.maximum(self.noise_var, covmat[diag_indices])
 
         self.x_train.grow_by((len(x), 0))
         self.y_train.grow_by((len(y), 0))
         self.x_train[-len(x):, :] = x
         self.y_train[-len(y):, :] = y
 
-        #try:
-        C_inv = inv(cholesky(CC_T))
+        #try: TODO
+        new_inv_chol = inv(cholesky(covmat))
         #except linalg.LinAlgError:
             #warnings.warn(
                 #'New submatrix of covariance matrix singular. '
@@ -102,8 +101,8 @@ class OnlineGP(object):
         self.inv_chol.grow_by((len(x), len(x)))
         self.inv_chol[:l, l:] = 0.0
         self.inv_chol[l:, :l] = -np.dot(
-            np.dot(C_inv, B), self.inv_chol[:l, :l])
-        self.inv_chol[l:, l:] = C_inv
+            np.dot(new_inv_chol, proj), self.inv_chol[:l, :l])
+        self.inv_chol[l:, l:] = new_inv_chol
         del self.inv_cov_matrix
 
     def predict(self, x, what=('mean',)):
