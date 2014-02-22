@@ -22,9 +22,10 @@ class SquaredExponentialKernel(object):
 
         d = -2 * np.einsum('ij,ij->i', x1, x2) + (
             np.sum(np.square(x1), 1) + np.sum(np.square(x2), 1))
-        return self.variance * np.exp(-0.5 * d / self.lengthscale ** 2)
+        return self.variance * np.exp(-0.5 * d / self.lengthscales ** 2)
 
-    def _calc_distance(self, x1, x2):
+    @staticmethod
+    def _calc_distance(x1, x2):
         return -2 * np.dot(x1, x2.T) + (
             np.sum(np.square(x1), 1)[:, None] +
             np.sum(np.square(x2), 1)[None, :])
