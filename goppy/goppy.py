@@ -65,7 +65,6 @@ class OnlineGP(object):
         self.trained = True
 
     def add(self, x, y):
-        # TODO trained unit test
         if len(x) <= 0:
             return
 

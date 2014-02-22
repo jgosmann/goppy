@@ -1,5 +1,6 @@
 """Unit tests for goppy module."""
 
+from hamcrest import assert_that, is_
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 
@@ -7,10 +8,28 @@ from ..goppy import OnlineGP
 from ..goppy import SquaredExponentialKernel
 
 
+class GPBuilder(object):
+    def __init__(self):
+        self.kernel = SquaredExponentialKernel([1.0])
+        self.noise_var = 0.01
+
+    def with_kernel(self, kernel):
+        self.kernel = kernel
+        return self
+
+    def with_noise_var(self, noise_var):
+        self.noise_var = noise_var
+        return self
+
+    def build(self):
+        return OnlineGP(self.kernel, self.noise_var)
+
+
 class TestOnlineGP(object):
 
     datasets = [
         {
+            # normal dataset
             'training': {
                 'X': np.array([[-4, -2, -0.5, 0, 2]]).T,
                 'Y': np.array([[-2, 0, 1, 2, -1]]).T,
@@ -33,14 +52,20 @@ class TestOnlineGP(object):
                 yield self.check_prediction, dataset['training'], test
 
     def check_prediction(self, training, test):
-        gp = OnlineGP(training['kernel'], training['noise_var'])
+        gp = (GPBuilder()
+            .with_kernel(training['kernel'])
+            .with_noise_var(training['noise_var'])
+            .build())
         gp.fit(training['X'], training['Y'])
         self._assert_prediction_matches_data(gp, test)
 
     def test_adding_data_online(self):
         for dataset in self.datasets:
             training = dataset['training']
-            gp = OnlineGP(training['kernel'], training['noise_var'])
+            gp = (GPBuilder()
+                .with_kernel(training['kernel'])
+                .with_noise_var(training['noise_var'])
+                .build())
             for x, y in zip(training['X'], training['Y']):
                 gp.add([x], [y])
 
@@ -54,12 +79,20 @@ class TestOnlineGP(object):
         assert_almost_equal(pred['mse'], data['mse'])
 
     def test_allows_adding_empty_datasets(self):
-        gp = OnlineGP(SquaredExponentialKernel([1.0]), 0.01)
-        gp.fit([[-1], [0], [1]], [[1], [0], [1]])
+        gp = GPBuilder().build()
+        data = self.datasets[0]['training']
+        gp.fit(data['X'], data['Y'])
         expected = gp.inv_cov_matrix
         gp.add([], [])
         actual = gp.inv_cov_matrix
         assert_equal(actual, expected)
+
+    def test_has_trained_indicator(self):
+        gp = GPBuilder().build()
+        assert_that(gp.trained, is_(False))
+        data = self.datasets[0]['training']
+        gp.fit(data['X'], data['Y'])
+        assert_that(gp.trained, is_(True))
 
     #def test_allows_adding_new_datapoints_online(self):
         #xs = [-4, -2, -0.5, 0, 2]
