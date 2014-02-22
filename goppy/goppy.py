@@ -87,14 +87,7 @@ class OnlineGP(object):
         self.x_train[-len(x):, :] = x
         self.y_train[-len(y):, :] = y
 
-        #try: TODO
         new_inv_chol = inv(cholesky(covmat))
-        #except linalg.LinAlgError:
-            #warnings.warn(
-                #'New submatrix of covariance matrix singular. '
-                #'Retraining on all data.', NumericalStabilityWarning)
-            #self._refit()
-            #return
 
         l = len(self.inv_chol)
         self.inv_chol.grow_by((len(x), len(x)))
