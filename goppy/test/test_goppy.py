@@ -1,8 +1,9 @@
 """Unit tests for goppy module."""
 
-from hamcrest import assert_that, is_
+from hamcrest import assert_that, contains_inanyorder, is_
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
+from mock import ANY, call, MagicMock
 
 from ..goppy import OnlineGP
 from ..goppy import SquaredExponentialKernel
@@ -12,6 +13,8 @@ class GPBuilder(object):
     def __init__(self):
         self.kernel = SquaredExponentialKernel([1.0])
         self.noise_var = 0.01
+        self.expected_size = None
+        self.buffer_factory = None
 
     def with_kernel(self, kernel):
         self.kernel = kernel
@@ -21,8 +24,21 @@ class GPBuilder(object):
         self.noise_var = noise_var
         return self
 
+    def with_expected_size(self, size):
+        self.expected_size = size
+        return self
+
+    def with_buffer_factory(self, factory):
+        self.buffer_factory = factory
+        return self
+
     def build(self):
-        return OnlineGP(self.kernel, self.noise_var)
+        kwargs = {}
+        if self.expected_size is not None:
+            kwargs['expected_size'] = self.expected_size
+        if self.buffer_factory is not None:
+            kwargs['buffer_factory'] = self.buffer_factory
+        return OnlineGP(self.kernel, self.noise_var, **kwargs)
 
 
 class TestOnlineGP(object):
@@ -108,6 +124,22 @@ class TestOnlineGP(object):
         data = self.datasets[0]['training']
         gp.fit(data['X'], data['Y'])
         assert_that(gp.trained, is_(True))
+
+    def test_uses_expected_size(self):
+        size = 30
+        factory = MagicMock()
+        factory.side_effect = lambda *args, **kwargs: MagicMock()
+        gp = (GPBuilder()
+            .with_buffer_factory(factory)
+            .with_expected_size(size)
+            .build())
+        data = self.datasets[0]['training']
+        gp.fit(data['X'], data['Y'])
+        expected_calls = [
+            call(ANY, buffer_shape=(size,)),
+            call(ANY, buffer_shape=(size,)),
+            call(ANY, buffer_shape=(size, size))]
+        assert_that(factory.mock_calls, contains_inanyorder(*expected_calls))
 
     #def test_can_calculate_prediction_derivative(self):
         #x = np.array([[-4, -2, -0.5, 0, 2]]).T

@@ -32,10 +32,13 @@ class SquaredExponentialKernel(object):
 
 
 class OnlineGP(object):
-    def __init__(self, kernel, noise_var=0.0, buffer_factory=GrowableArray):
+    def __init__(
+            self, kernel, noise_var=0.0, expected_size=None,
+            buffer_factory=GrowableArray):
         self.kernel = kernel
         self.noise_var = noise_var
-        self.buffer_factory = buffer_factory
+        self._expected_size = expected_size
+        self._buffer_factory = buffer_factory
         self.x_train = None
         self.y_train = None
         self.inv_chol = None
@@ -55,12 +58,19 @@ class OnlineGP(object):
     def fit(self, x, y):
         x = np.asarray(x)
         y = np.asarray(y)
-        # FIXME expected shape
-        self.x_train = self.buffer_factory(x.shape)
-        self.y_train = self.buffer_factory(y.shape)
+
+        if self._expected_size is not None:
+            buffer_shape = (self._expected_size,)
+            buffer_shape2 = (self._expected_size, self._expected_size)
+        else:
+            buffer_shape = buffer_shape2 = None
+
+        self.x_train = self._buffer_factory(x.shape, buffer_shape=buffer_shape)
+        self.y_train = self._buffer_factory(y.shape, buffer_shape=buffer_shape)
         self.x_train[:, :] = x
         self.y_train[:, :] = y
-        self.inv_chol = self.buffer_factory((x.shape[0], x.shape[0]))
+        self.inv_chol = self._buffer_factory(
+            (x.shape[0], x.shape[0]), buffer_shape=buffer_shape2)
         self.inv_chol[:, :] = inv(cholesky(
             self.kernel(x, x) + np.eye(len(x)) * self.noise_var))
         del self.inv_cov_matrix
