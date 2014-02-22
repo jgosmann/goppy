@@ -1,7 +1,7 @@
 """Unit tests for goppy module."""
 
 import numpy as np
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_equal
 
 from ..goppy import OnlineGP
 from ..goppy import SquaredExponentialKernel
@@ -52,6 +52,14 @@ class TestOnlineGP(object):
         pred = gp.predict(data['X'], what=['mean', 'mse'])
         assert_almost_equal(pred['mean'], data['Y'])
         assert_almost_equal(pred['mse'], data['mse'])
+
+    def test_allows_adding_empty_datasets(self):
+        gp = OnlineGP(SquaredExponentialKernel([1.0]), 0.01)
+        gp.fit([[-1], [0], [1]], [[1], [0], [1]])
+        expected = gp.inv_cov_matrix
+        gp.add([], [])
+        actual = gp.inv_cov_matrix
+        assert_equal(actual, expected)
 
     #def test_allows_adding_new_datapoints_online(self):
         #xs = [-4, -2, -0.5, 0, 2]

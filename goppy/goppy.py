@@ -65,9 +65,9 @@ class OnlineGP(object):
         self.trained = True
 
     def add(self, x, y):
-        # TODO length check, trained unit test
-        #if len(x) <= 0:
-            #return
+        # TODO trained unit test
+        if len(x) <= 0:
+            return
 
         x = np.asarray(x)
         y = np.asarray(y)
