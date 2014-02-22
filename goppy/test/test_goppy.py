@@ -84,9 +84,9 @@ class TestOnlineGP(object):
 
     def check_prediction(self, training, test):
         gp = (GPBuilder()
-            .with_kernel(training['kernel'])
-            .with_noise_var(training['noise_var'])
-            .build())
+              .with_kernel(training['kernel'])
+              .with_noise_var(training['noise_var'])
+              .build())
         gp.fit(training['X'], training['Y'])
         self._assert_prediction_matches_data(gp, test)
 
@@ -94,9 +94,9 @@ class TestOnlineGP(object):
         for dataset in self.datasets:
             training = dataset['training']
             gp = (GPBuilder()
-                .with_kernel(training['kernel'])
-                .with_noise_var(training['noise_var'])
-                .build())
+                  .with_kernel(training['kernel'])
+                  .with_noise_var(training['noise_var'])
+                  .build())
             for x, y in zip(training['X'], training['Y']):
                 gp.add([x], [y])
 
@@ -130,9 +130,9 @@ class TestOnlineGP(object):
         factory = MagicMock()
         factory.side_effect = lambda *args, **kwargs: MagicMock()
         gp = (GPBuilder()
-            .with_buffer_factory(factory)
-            .with_expected_size(size)
-            .build())
+              .with_buffer_factory(factory)
+              .with_expected_size(size)
+              .build())
         data = self.datasets[0]['training']
         gp.fit(data['X'], data['Y'])
         expected_calls = [
