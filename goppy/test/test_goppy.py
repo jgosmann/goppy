@@ -40,7 +40,22 @@ class TestOnlineGP(object):
                 {
                     'X': np.array([[-3, 1]]).T,
                     'Y': np.array([[-0.78511166, 0.37396387]]).T,
-                    'mse': [1.04585738, 1.04888027]
+                    'mse': np.array([1.04585738, 1.04888027])
+                }
+            ]
+        }, {
+            # data as lists
+            'training': {
+                'X': [[-4], [-2], [-0.5], [0], [2]],
+                'Y': [[-2], [0], [1], [2], [-1]],
+                'kernel': SquaredExponentialKernel([1.0]),
+                'noise_var': 0.5
+            },
+            'tests': [
+                {
+                    'X': np.array([[-3, 1]]).T,
+                    'Y': np.array([[-0.78511166, 0.37396387]]).T,
+                    'mse': np.array([1.04585738, 1.04888027])
                 }
             ]
         }
