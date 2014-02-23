@@ -23,6 +23,11 @@ class SquaredExponentialKernel(object):
             direction = x1[:, None, :] - x2[None, :, :]
             res['derivative'] = (-1.0 / (self.lengthscales ** 2) * direction *
                 res['y'][:, :, None])
+        if 'param_derivatives' in what:
+            variance_deriv = np.exp(-0.5 * d / self.lengthscales ** 2)
+            lengthscale_deriv = 2 * self.variance * d / (
+                    self.lengthscales ** 3) * variance_deriv
+            res['param_derivatives'] = [lengthscale_deriv, variance_deriv]
         return res
 
     def diag(self, x1, x2):
@@ -152,13 +157,24 @@ class OnlineGP(object):
             pred['mse_derivative'] = lazy_vars.mse_derivative
         return pred
 
-    def calc_log_likelihood(self):
+    def calc_log_likelihood(self, what=('value',)):
+        res = {}
         svs = np.dot(self.inv_chol, self.y_train)
-        log_likelihood = -0.5 * np.dot(svs.T, svs) + \
-            np.sum(np.log(np.diag(self.inv_chol))) - \
-            0.5 * len(self.y_train) * np.log(2 * np.pi)
-        return np.squeeze(log_likelihood)
-
+        if 'value' in what:
+            res['value'] = np.squeeze(
+                -0.5 * np.dot(svs.T, svs) +
+                np.sum(np.log(np.diag(self.inv_chol))) -
+                0.5 * len(self.y_train) * np.log(2 * np.pi))
+        if 'derivative' in what:
+            alpha = np.dot(self.inv_chol.T, svs)
+            grad_weighting = np.dot(alpha, alpha.T) - self.inv_cov_matrix
+            res['derivative'] = np.array([
+                0.5 * np.sum(np.einsum(
+                    'ij,ji->i', grad_weighting, param_deriv))
+                for param_deriv in self.kernel.full(
+                    self.x_train, self.x_train, what='param_derivatives')[
+                        'param_derivatives']])
+        return res
 
 # TODO unit test
 class LazyVarCollection(object):

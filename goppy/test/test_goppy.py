@@ -30,8 +30,8 @@ class GPBuilder(object):
 
     def with_training_config(self, training_config):
         return (self
-            .with_kernel(training_config['kernel'])
-            .with_noise_var(training_config['noise_var']))
+                .with_kernel(training_config['kernel'])
+                .with_noise_var(training_config['noise_var']))
 
     def with_buffer_factory(self, factory):
         self.buffer_factory = factory
@@ -66,7 +66,9 @@ class TestOnlineGP(object):
                     'mse_derivative': np.array([[-0.00352932], [-0.00173095]])
                 }
             ],
-            'log_likelihood': -8.51911832
+            'log_likelihood': -8.51911832,
+            'log_likelihood_derivative': np.array([-0.76088728, 0.49230927])
+
         }, {
             # data as lists
             'training': {
@@ -84,7 +86,8 @@ class TestOnlineGP(object):
                     'mse_derivative': np.array([[-0.00352932], [-0.00173095]])
                 }
             ],
-            'log_likelihood': -8.51911832
+            'log_likelihood': -8.51911832,
+            'log_likelihood_derivative': np.array([-0.76088728, 0.49230927])
         }
     ]
 
@@ -158,12 +161,16 @@ class TestOnlineGP(object):
         gp = GPBuilder().with_training_config(training).build()
         gp.fit(training['X'], training['Y'])
         assert_that(
-            gp.calc_log_likelihood(), is_(close_to(log_likelihood, 1e-6)))
+            gp.calc_log_likelihood()['value'],
+            is_(close_to(log_likelihood, 1e-6)))
 
-    #def test_can_calculate_neg_log_likelihood_derivative(self):
-        #x = np.array([[-4, -2, -0.5, 0, 2]]).T
-        #y = np.array([[-2, 0, 1, 2, -1]]).T
-        #self.gp.fit(x, y)
-        #actual = self.gp.calc_neg_log_likelihood(eval_derivative=True)
-        #expected = np.array([0.76088728, -0.49230927])
-        #assert_almost_equal(actual[1], expected)
+    def test_likelihood_derivative(self):
+        for dataset in self.datasets:
+            yield self.check_likelihood_derivative, dataset['training'], \
+                dataset['log_likelihood_derivative']
+
+    def check_likelihood_derivative(self, training, derivative):
+        gp = GPBuilder().with_training_config(training).build()
+        gp.fit(training['X'], training['Y'])
+        assert_almost_equal(gp.calc_log_likelihood(
+            what=('derivative',))['derivative'], derivative)
