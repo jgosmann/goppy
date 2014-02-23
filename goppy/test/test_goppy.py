@@ -164,14 +164,6 @@ class TestOnlineGP(object):
         assert_that(
             gp.calc_log_likelihood(), is_(close_to(log_likelihood, 1e-6)))
 
-    #def test_can_calculate_neg_log_likelihood(self):
-        #x = np.array([[-4, -2, -0.5, 0, 2]]).T
-        #y = np.array([[-2, 0, 1, 2, -1]]).T
-        #self.gp.fit(x, y)
-        #actual = self.gp.calc_neg_log_likelihood()
-        #expected = 8.51911832
-        #assert_almost_equal(actual, expected)
-
     #def test_can_calculate_neg_log_likelihood_derivative(self):
         #x = np.array([[-4, -2, -0.5, 0, 2]]).T
         #y = np.array([[-2, 0, 1, 2, -1]]).T

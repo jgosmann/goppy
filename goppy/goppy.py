@@ -157,7 +157,7 @@ class OnlineGP(object):
         log_likelihood = -0.5 * np.dot(svs.T, svs) + \
             np.sum(np.log(np.diag(self.inv_chol))) - \
             0.5 * len(self.y_train) * np.log(2 * np.pi)
-        return log_likelihood
+        return np.squeeze(log_likelihood)
 
 
 # TODO unit test
