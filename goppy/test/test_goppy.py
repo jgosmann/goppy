@@ -1,6 +1,6 @@
 """Unit tests for goppy module."""
 
-from hamcrest import assert_that, contains_inanyorder, is_
+from hamcrest import assert_that, close_to, contains_inanyorder, is_
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 from mock import ANY, call, MagicMock
@@ -60,7 +60,8 @@ class TestOnlineGP(object):
                     'derivative': np.array([[[0.85538797]], [[-1.30833924]]]),
                     'mse_derivative': np.array([[-0.00352932], [-0.00173095]])
                 }
-            ]
+            ],
+            'log_likelihood': -8.51911832
         }, {
             # data as lists
             'training': {
@@ -77,7 +78,8 @@ class TestOnlineGP(object):
                     'derivative': np.array([[[0.85538797]], [[-1.30833924]]]),
                     'mse_derivative': np.array([[-0.00352932], [-0.00173095]])
                 }
-            ]
+            ],
+            'log_likelihood': -8.51911832
         }
     ]
 
@@ -147,6 +149,20 @@ class TestOnlineGP(object):
             call(ANY, buffer_shape=(size,)),
             call(ANY, buffer_shape=(size, size))]
         assert_that(factory.mock_calls, contains_inanyorder(*expected_calls))
+
+    def test_likelihood(self):
+        for dataset in self.datasets:
+            yield self.check_likelihood, dataset['training'], \
+                dataset['log_likelihood']
+
+    def check_likelihood(self, training, log_likelihood):
+        gp = (GPBuilder()
+              .with_kernel(training['kernel'])
+              .with_noise_var(training['noise_var'])
+              .build())
+        gp.fit(training['X'], training['Y'])
+        assert_that(
+            gp.calc_log_likelihood(), is_(close_to(log_likelihood, 1e-6)))
 
     #def test_can_calculate_neg_log_likelihood(self):
         #x = np.array([[-4, -2, -0.5, 0, 2]]).T

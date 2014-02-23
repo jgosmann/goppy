@@ -152,6 +152,13 @@ class OnlineGP(object):
             pred['mse_derivative'] = lazy_vars.mse_derivative
         return pred
 
+    def calc_log_likelihood(self):
+        svs = np.dot(self.inv_chol, self.y_train)
+        log_likelihood = -0.5 * np.dot(svs.T, svs) + \
+            np.sum(np.log(np.diag(self.inv_chol))) - \
+            0.5 * len(self.y_train) * np.log(2 * np.pi)
+        return log_likelihood
+
 
 # TODO unit test
 class LazyVarCollection(object):
