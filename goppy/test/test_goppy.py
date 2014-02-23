@@ -56,7 +56,8 @@ class TestOnlineGP(object):
                 {
                     'X': np.array([[-3, 1]]).T,
                     'Y': np.array([[-0.78511166, 0.37396387]]).T,
-                    'mse': np.array([1.04585738, 1.04888027])
+                    'mse': np.array([1.04585738, 1.04888027]),
+                    'derivative': np.array([[[0.85538797]], [[-1.30833924]]])
                 }
             ]
         }, {
@@ -71,7 +72,8 @@ class TestOnlineGP(object):
                 {
                     'X': np.array([[-3, 1]]).T,
                     'Y': np.array([[-0.78511166, 0.37396387]]).T,
-                    'mse': np.array([1.04585738, 1.04888027])
+                    'mse': np.array([1.04585738, 1.04888027]),
+                    'derivative': np.array([[[0.85538797]], [[-1.30833924]]])
                 }
             ]
         }
@@ -105,9 +107,10 @@ class TestOnlineGP(object):
 
     @staticmethod
     def _assert_prediction_matches_data(gp, data):
-        pred = gp.predict(data['X'], what=['mean', 'mse'])
+        pred = gp.predict(data['X'], what=['mean', 'mse', 'derivative'])
         assert_almost_equal(pred['mean'], data['Y'])
         assert_almost_equal(pred['mse'], data['mse'])
+        assert_almost_equal(pred['derivative'], data['derivative'])
 
     def test_allows_adding_empty_datasets(self):
         gp = GPBuilder().build()

@@ -13,8 +13,17 @@ class SquaredExponentialKernel(object):
         self.variance = variance
 
     def __call__(self, x1, x2):
+        return self.full(x1, x2, what=('y',))['y']
+
+    def full(self, x1, x2, what=('y',)):
+        res = {}
         d = self._calc_distance(x1, x2)
-        return self.variance * np.exp(-0.5 * d / self.lengthscales ** 2)
+        res['y'] = self.variance * np.exp(-0.5 * d / self.lengthscales ** 2)
+        if 'derivative' in what:
+            direction = x1[:, None, :] - x2[None, :, :]
+            res['derivative'] = (-1.0 / (self.lengthscales ** 2) * direction *
+                res['y'][:, :, None])
+        return res
 
     def diag(self, x1, x2):
         if x1 is x2:
@@ -112,22 +121,35 @@ class OnlineGP(object):
     def predict(self, x, what=('mean',)):
         pred = {}
 
-        input_vs_train_dist = self.kernel(x, self.x_train)
+        # FIXME kernel evaluation for mean + derivative could be more efficient
+        lazy_vars = LazyVarCollection(
+            input_vs_train_dist=lambda v: self.kernel(x, self.x_train),
+            svs=lambda v: np.dot(self.inv_cov_matrix, self.y_train),
+            mean=lambda v: np.dot(v.input_vs_train_dist, v.svs),
+            mse_svs=lambda v: np.dot(
+                self.inv_cov_matrix, v.input_vs_train_dist.T),
+            mse=lambda v: np.maximum(
+                self.noise_var,
+                self.noise_var + self.kernel.diag(x, x) - np.einsum(
+                    'ij,ji->i', v.input_vs_train_dist, v.mse_svs)),
+            derivative=lambda v: np.einsum('ijk,jl->ilk', self.kernel.full(
+                x, self.x_train, what=('derivative',))['derivative'], v.svs))
 
         if 'mean' in what:
-            pred['mean'] = self._calc_mean_prediction(input_vs_train_dist)
+            pred['mean'] = lazy_vars.mean
         if 'mse' in what:
-            pred['mse'] = self._calc_mse_prediction(x, input_vs_train_dist)
-
+            pred['mse'] = lazy_vars.mse
+        if 'derivative' in what:
+            pred['derivative'] = lazy_vars.derivative
         return pred
 
-    def _calc_mean_prediction(self, input_vs_train_dist):
-        svs = np.dot(self.inv_cov_matrix, self.y_train)
-        return np.dot(input_vs_train_dist, svs)
 
-    def _calc_mse_prediction(self, x, input_vs_train_dist):
-        svs = np.dot(self.inv_cov_matrix, input_vs_train_dist.T)
-        return np.maximum(
-            self.noise_var,
-            self.noise_var + self.kernel.diag(x, x) - np.einsum(
-                'ij,ji->i', input_vs_train_dist, svs))
+# TODO unit test
+class LazyVarCollection(object):
+    def __init__(self, **kwargs):
+        self._eval_fns = kwargs
+
+    def __getattr__(self, name):
+        value = self._eval_fns[name](self)
+        setattr(self, name, value)
+        return value
