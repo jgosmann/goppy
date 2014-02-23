@@ -57,7 +57,8 @@ class TestOnlineGP(object):
                     'X': np.array([[-3, 1]]).T,
                     'Y': np.array([[-0.78511166, 0.37396387]]).T,
                     'mse': np.array([1.04585738, 1.04888027]),
-                    'derivative': np.array([[[0.85538797]], [[-1.30833924]]])
+                    'derivative': np.array([[[0.85538797]], [[-1.30833924]]]),
+                    'mse_derivative': np.array([[-0.00352932], [-0.00173095]])
                 }
             ]
         }, {
@@ -73,7 +74,8 @@ class TestOnlineGP(object):
                     'X': np.array([[-3, 1]]).T,
                     'Y': np.array([[-0.78511166, 0.37396387]]).T,
                     'mse': np.array([1.04585738, 1.04888027]),
-                    'derivative': np.array([[[0.85538797]], [[-1.30833924]]])
+                    'derivative': np.array([[[0.85538797]], [[-1.30833924]]]),
+                    'mse_derivative': np.array([[-0.00352932], [-0.00173095]])
                 }
             ]
         }
@@ -107,10 +109,12 @@ class TestOnlineGP(object):
 
     @staticmethod
     def _assert_prediction_matches_data(gp, data):
-        pred = gp.predict(data['X'], what=['mean', 'mse', 'derivative'])
+        pred = gp.predict(
+            data['X'], what=['mean', 'mse', 'derivative', 'mse_derivative'])
         assert_almost_equal(pred['mean'], data['Y'])
         assert_almost_equal(pred['mse'], data['mse'])
         assert_almost_equal(pred['derivative'], data['derivative'])
+        assert_almost_equal(pred['mse_derivative'], data['mse_derivative'])
 
     def test_allows_adding_empty_datasets(self):
         gp = GPBuilder().build()
@@ -143,27 +147,6 @@ class TestOnlineGP(object):
             call(ANY, buffer_shape=(size,)),
             call(ANY, buffer_shape=(size, size))]
         assert_that(factory.mock_calls, contains_inanyorder(*expected_calls))
-
-    #def test_can_calculate_prediction_derivative(self):
-        #x = np.array([[-4, -2, -0.5, 0, 2]]).T
-        #y = np.array([[-2, 0, 1, 2, -1]]).T
-        #self.gp.fit(x, y)
-
-        #x_star = np.array([[-3, 1]]).T
-        #expected = np.array([[[0.85538797]], [[-1.30833924]]])
-        #unused, actual = self.gp.predict(x_star, eval_derivatives=True)
-        #assert_almost_equal(actual, expected)
-
-    #def test_can_calculate_mse_derivative(self):
-        #x = np.array([[-4, -2, -0.5, 0, 2]]).T
-        #y = np.array([[-2, 0, 1, 2, -1]]).T
-        #self.gp.fit(x, y)
-
-        #x_star = np.array([[-3, 1]]).T
-        #expected = np.array([[-0.00352932], [-0.00173095]])
-        #unused, unused, unused, actual = self.gp.predict(
-            #x_star, eval_MSE=True, eval_derivatives=True)
-        #assert_almost_equal(actual, expected)
 
     #def test_can_calculate_neg_log_likelihood(self):
         #x = np.array([[-4, -2, -0.5, 0, 2]]).T

@@ -121,7 +121,7 @@ class OnlineGP(object):
     def predict(self, x, what=('mean',)):
         pred = {}
 
-        if 'derivative' in what:
+        if 'derivative' in what or 'mse_derivative' in what:
             kernel_what = ('y', 'derivative')
         else:
             kernel_what = ('y',)
@@ -138,7 +138,9 @@ class OnlineGP(object):
                 self.noise_var + self.kernel.diag(x, x) - np.einsum(
                     'ij,ji->i', v.input_vs_train_dist['y'], v.mse_svs)),
             derivative=lambda v: np.einsum(
-                'ijk,jl->ilk', v.input_vs_train_dist['derivative'], v.svs))
+                'ijk,jl->ilk', v.input_vs_train_dist['derivative'], v.svs),
+            mse_derivative=lambda v: -2 * np.einsum(
+                'ijk,ji->ik', v.input_vs_train_dist['derivative'], v.mse_svs))
 
         if 'mean' in what:
             pred['mean'] = lazy_vars.mean
@@ -146,6 +148,8 @@ class OnlineGP(object):
             pred['mse'] = lazy_vars.mse
         if 'derivative' in what:
             pred['derivative'] = lazy_vars.derivative
+        if 'mse_derivative' in what:
+            pred['mse_derivative'] = lazy_vars.mse_derivative
         return pred
 
 
