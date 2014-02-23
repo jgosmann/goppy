@@ -121,19 +121,24 @@ class OnlineGP(object):
     def predict(self, x, what=('mean',)):
         pred = {}
 
-        # FIXME kernel evaluation for mean + derivative could be more efficient
+        if 'derivative' in what:
+            kernel_what = ('y', 'derivative')
+        else:
+            kernel_what = ('y',)
+
         lazy_vars = LazyVarCollection(
-            input_vs_train_dist=lambda v: self.kernel(x, self.x_train),
+            input_vs_train_dist=lambda v: self.kernel.full(
+                x, self.x_train, kernel_what),
             svs=lambda v: np.dot(self.inv_cov_matrix, self.y_train),
-            mean=lambda v: np.dot(v.input_vs_train_dist, v.svs),
+            mean=lambda v: np.dot(v.input_vs_train_dist['y'], v.svs),
             mse_svs=lambda v: np.dot(
-                self.inv_cov_matrix, v.input_vs_train_dist.T),
+                self.inv_cov_matrix, v.input_vs_train_dist['y'].T),
             mse=lambda v: np.maximum(
                 self.noise_var,
                 self.noise_var + self.kernel.diag(x, x) - np.einsum(
-                    'ij,ji->i', v.input_vs_train_dist, v.mse_svs)),
-            derivative=lambda v: np.einsum('ijk,jl->ilk', self.kernel.full(
-                x, self.x_train, what=('derivative',))['derivative'], v.svs))
+                    'ij,ji->i', v.input_vs_train_dist['y'], v.mse_svs)),
+            derivative=lambda v: np.einsum(
+                'ijk,jl->ilk', v.input_vs_train_dist['derivative'], v.svs))
 
         if 'mean' in what:
             pred['mean'] = lazy_vars.mean
