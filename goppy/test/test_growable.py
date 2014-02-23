@@ -1,7 +1,6 @@
 """Unit test for growable module."""
 
-from hamcrest import assert_that, equal_to, instance_of, is_, is_not, \
-    same_instance
+from hamcrest import assert_that, is_, is_not, same_instance
 from nose.tools import raises
 import numpy as np
 from numpy.testing import assert_array_equal

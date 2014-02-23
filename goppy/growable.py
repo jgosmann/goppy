@@ -51,6 +51,14 @@ class GrowableArray(object):
     def __len__(self):
         return self._view.__len__()
 
+    # TODO unittest
+    def __repr__(self):
+        return repr(self._view)
+
+    # TODO unittest
+    def __str__(self):
+        return str(self._view)
+
     def grow_by(self, amount):
         """Grow the array.
 
@@ -59,9 +67,11 @@ class GrowableArray(object):
 
         """
         amount = np.asarray(amount, dtype=int)
-        assert np.all(amount > 0)
+        # TODO unit test equal 0 works
+        assert np.all(amount >= 0)
         new_shape = np.asarray(self.shape, dtype=int) + amount
-        self._view = None
+        # TODO unittest data stays at the right place
         if np.any(self._data.shape < new_shape):
-            self._data.resize(self.MARGIN_FACTOR * new_shape)
+            self._data = np.empty(self.MARGIN_FACTOR * new_shape)
+            self._data[[slice(None, s) for s in self._view.shape]] = self._view
         self._view = self.__get_view_for_shape(self._data, new_shape)
