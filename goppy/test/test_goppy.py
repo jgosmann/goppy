@@ -28,6 +28,11 @@ class GPBuilder(object):
         self.expected_size = size
         return self
 
+    def with_training_config(self, training_config):
+        return (self
+            .with_kernel(training_config['kernel'])
+            .with_noise_var(training_config['noise_var']))
+
     def with_buffer_factory(self, factory):
         self.buffer_factory = factory
         return self
@@ -89,20 +94,14 @@ class TestOnlineGP(object):
                 yield self.check_prediction, dataset['training'], test
 
     def check_prediction(self, training, test):
-        gp = (GPBuilder()
-              .with_kernel(training['kernel'])
-              .with_noise_var(training['noise_var'])
-              .build())
+        gp = GPBuilder().with_training_config(training).build()
         gp.fit(training['X'], training['Y'])
         self._assert_prediction_matches_data(gp, test)
 
     def test_adding_data_online(self):
         for dataset in self.datasets:
             training = dataset['training']
-            gp = (GPBuilder()
-                  .with_kernel(training['kernel'])
-                  .with_noise_var(training['noise_var'])
-                  .build())
+            gp = GPBuilder().with_training_config(training).build()
             for x, y in zip(training['X'], training['Y']):
                 gp.add([x], [y])
 
@@ -156,10 +155,7 @@ class TestOnlineGP(object):
                 dataset['log_likelihood']
 
     def check_likelihood(self, training, log_likelihood):
-        gp = (GPBuilder()
-              .with_kernel(training['kernel'])
-              .with_noise_var(training['noise_var'])
-              .build())
+        gp = GPBuilder().with_training_config(training).build()
         gp.fit(training['X'], training['Y'])
         assert_that(
             gp.calc_log_likelihood(), is_(close_to(log_likelihood, 1e-6)))
