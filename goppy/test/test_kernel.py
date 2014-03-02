@@ -34,9 +34,12 @@ class TestSquaredExponentialKernel(object):
         }
     ]
 
-    def test_kernel(self):
+    def test_datasets(self):
         for dataset in self.datasets:
             yield self.check_kernel, dataset
+            yield self.check_can_be_used_as_function, dataset
+            yield self.check_diag, dataset
+            yield self.check_diag_symmetric, dataset
 
     def check_kernel(self, dataset):
         kernel = SquaredExponentialKernel(**dataset['params'])
@@ -49,28 +52,15 @@ class TestSquaredExponentialKernel(object):
         assert_almost_equal(
             result['param_derivatives'], dataset['param_derivatives'])
 
-    def test_kernel_can_be_used_as_function(self):
-        for dataset in self.datasets:
-            yield self.check_can_be_used_as_function, dataset
-
     def check_can_be_used_as_function(self, dataset):
         kernel = SquaredExponentialKernel(**dataset['params'])
         x1, x2 = (dataset['x1'], dataset['x2'])
         assert_equal(kernel(x1, x2), kernel.full(x1, x2)['y'])
 
-    def test_diag(self):
-        for dataset in self.datasets:
-            yield self.check_diag, dataset
-
     def check_diag(self, dataset):
         kernel = SquaredExponentialKernel(**dataset['params'])
         x1, x2 = (dataset['x1'], dataset['x2'])
         assert_equal(kernel.diag(x1, x2), np.diag(kernel(x1, x2)))
-
-    # TODO refactor: too much code duplication for iterating over data sets.
-    def test_diag_symmetric(self):
-        for dataset in self.datasets:
-            yield self.check_diag_symmetric, dataset
 
     def check_diag_symmetric(self, dataset):
         kernel = SquaredExponentialKernel(**dataset['params'])
