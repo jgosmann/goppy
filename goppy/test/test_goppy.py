@@ -6,7 +6,7 @@ from numpy.testing import assert_almost_equal, assert_equal
 from mock import ANY, call, MagicMock
 
 from ..goppy import _LazyVarCollection, OnlineGP
-from ..goppy import SquaredExponentialKernel
+from ..kernel import SquaredExponentialKernel
 
 
 class GPBuilder(object):
