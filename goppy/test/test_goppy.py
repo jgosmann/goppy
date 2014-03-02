@@ -5,7 +5,7 @@ import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 from mock import ANY, call, MagicMock
 
-from ..goppy import OnlineGP
+from ..goppy import _LazyVarCollection, OnlineGP
 from ..goppy import SquaredExponentialKernel
 
 
@@ -174,3 +174,30 @@ class TestOnlineGP(object):
         gp.fit(training['X'], training['Y'])
         assert_almost_equal(gp.calc_log_likelihood(
             what=('derivative',))['derivative'], derivative)
+
+
+class TestLazyVarCollection(object):
+    def test_returns_function_return_value_on_var_request(self):
+        var_collection = _LazyVarCollection(test_var=lambda self: 23)
+        assert_that(var_collection.test_var, is_(23))
+
+    def test_function_call_is_lazy(self):
+        mock = MagicMock()
+        var_collection = _LazyVarCollection(test_var=mock)
+        assert_that(mock.called, is_(False))
+        # pylint: disable=pointless-statement
+        var_collection.test_var
+        assert_that(mock.called, is_(True))
+
+    def test_caches_function_result(self):
+        mock = MagicMock()
+        mock.return_value = 23
+        var_collection = _LazyVarCollection(test_var=mock)
+        assert_that(var_collection.test_var, is_(mock.return_value))
+        assert_that(var_collection.test_var, is_(mock.return_value))
+        mock.assert_called_once_with(var_collection)
+
+    def test_allows_chaining(self):
+        var_collection = _LazyVarCollection(
+            var1=lambda self: 2, var2=lambda self: 3 * self.var1)
+        assert_that(var_collection.var2, is_(6))

@@ -131,7 +131,7 @@ class OnlineGP(object):
         else:
             kernel_what = ('y',)
 
-        lazy_vars = LazyVarCollection(
+        lazy_vars = _LazyVarCollection(
             input_vs_train_dist=lambda v: self.kernel.full(
                 x, self.x_train, kernel_what),
             svs=lambda v: np.dot(self.inv_cov_matrix, self.y_train),
@@ -176,8 +176,8 @@ class OnlineGP(object):
                         'param_derivatives']])
         return res
 
-# TODO unit test
-class LazyVarCollection(object):
+
+class _LazyVarCollection(object):
     def __init__(self, **kwargs):
         self._eval_fns = kwargs
 
