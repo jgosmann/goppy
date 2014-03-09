@@ -4,7 +4,7 @@ from hamcrest import assert_that, is_, equal_to
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 
-from ..kernel import SquaredExponentialKernel
+from ..kernel import ExponentialKernel, SquaredExponentialKernel
 
 
 class KernelTest(object):
@@ -92,3 +92,35 @@ class TestSquaredExponentialKernel(KernelTest):
 
     def create_kernel(self, **kwargs):
         return SquaredExponentialKernel(**kwargs)
+
+
+class TestExponentialKernel(KernelTest):
+    @property
+    def datasets(self):
+        return [
+            {
+                'x1': np.array([[1, 1, 1], [1, 2, 1]]),
+                'x2': np.array([[1, 2, 3], [4, 2, 1]]),
+                'params': {
+                    'lengthscales': [0.6],
+                    'variance': 0.75
+                },
+                'y': np.array([
+                    [0.018052663641012889, 0.0038559231230571806],
+                    [0.026755495010439296, 0.0050534602493140998]]),
+                'derivative': np.array([
+                    [[0.0, 0.01345566, 0.02691132],
+                     [0.00609675, 0.00203225, -0.0]],
+                    [[0.0, 0.0, 0.0445924916840655],
+                     [0.008422433748856834, 0.0, 0.0]]]),
+                'param_derivatives': [
+                    np.array([[0.11213051, 0.03387083],
+                              [0.14864164, 0.04211217]]),
+                    np.array([[0.02407022, 0.00514123],
+                             [0.03567399, 0.00673795]])
+                ]
+            }
+        ]
+
+    def create_kernel(self, **kwargs):
+        return ExponentialKernel(**kwargs)
