@@ -28,7 +28,6 @@ class KernelTest(object):
         x1, x2 = (dataset['x1'], dataset['x2'])
         result = kernel.full(x1, x2, what=(
             'y', 'derivative', 'param_derivatives'))
-        print result['param_derivatives']
         assert_almost_equal(result['y'], dataset['y'])
         assert_almost_equal(result['derivative'], dataset['derivative'])
         assert_almost_equal(
