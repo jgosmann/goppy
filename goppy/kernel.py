@@ -90,7 +90,8 @@ class Matern32Kernel(object):
         scaled_d = np.sqrt(3) * d / self.lengthscales
         return self.variance * (1 + scaled_d) * np.exp(-scaled_d)
 
-    def _calc_distance(self, x1, x2):
+    @staticmethod
+    def _calc_distance(x1, x2):
         return np.sqrt(np.maximum(0, -2 * np.dot(x1, x2.T) + (
             np.sum(np.square(x1), 1)[:, None] +
             np.sum(np.square(x2), 1)[None, :])))
