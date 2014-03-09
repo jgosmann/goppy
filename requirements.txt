@@ -1,2 +1,2 @@
-hamcrest
+pyhamcrest
 numpy
