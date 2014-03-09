@@ -157,14 +157,14 @@ class SquaredExponentialKernel(object):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
 
-    def _get_params(self):
+    @property
+    def params(self):
         return np.concatenate((self.lengthscales, (self.variance,)))
 
-    def _set_params(self, value):
-        self.lengthscales = np.asarray(value[:-1])
-        self.variance = value[-1]
-
-    params = property(_get_params, _set_params)
+    @params.setter
+    def params(self, values):
+        self.lengthscales = np.asarray(values[:-1])
+        self.variance = values[-1]
 
     def __call__(self, x1, x2):
         return self.full(x1, x2, what=('y',))['y']
