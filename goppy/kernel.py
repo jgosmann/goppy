@@ -49,6 +49,53 @@ class ExponentialKernel(object):
             np.sum(np.square(x2), 1)[None, :])))
 
 
+class Matern32Kernel(object):
+    def __init__(self, lengthscales, variance=1.0):
+        self.lengthscales = np.asarray(lengthscales)
+        self.variance = variance
+
+    @property
+    def params(self):
+        return np.concatenate((self.lengthscales, (self.variance,)))
+
+    @params.setter
+    def params(self, values):
+        self.lengthscales = np.asarray(values[:-1])
+        self.variance = values[-1]
+
+    def __call__(self, x1, x2):
+        return self.full(x1, x2, what=('y',))['y']
+
+    def full(self, x1, x2, what=('y',)):
+        res = {}
+        scaled_d = np.sqrt(3) * self._calc_distance(x1, x2) / self.lengthscales
+        exp_term = np.exp(-scaled_d)
+        res['y'] = self.variance * (1 + scaled_d) * exp_term
+        if 'derivative' in what:
+            direction = x1[:, None, :] - x2[None, :, :]
+            res['derivative'] = -3 * direction / (self.lengthscales ** 2) *\
+                self.variance * exp_term[:, :, None]
+        if 'param_derivatives' in what:
+            variance_deriv = (1 + scaled_d) * exp_term
+            lengthscale_deriv = self.variance / self.lengthscales * \
+                (scaled_d ** 2) * exp_term
+            res['param_derivatives'] = [lengthscale_deriv, variance_deriv]
+        return res
+
+    def diag(self, x1, x2):
+        if x1 is x2:
+            return self.variance * np.ones(len(x1))
+
+        d = np.sqrt(np.sum((x1 - x2) ** 2, axis=1))
+        scaled_d = np.sqrt(3) * d / self.lengthscales
+        return self.variance * (1 + scaled_d) * np.exp(-scaled_d)
+
+    def _calc_distance(self, x1, x2):
+        return np.sqrt(np.maximum(0, -2 * np.dot(x1, x2.T) + (
+            np.sum(np.square(x1), 1)[:, None] +
+            np.sum(np.square(x2), 1)[None, :])))
+
+
 class SquaredExponentialKernel(object):
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
