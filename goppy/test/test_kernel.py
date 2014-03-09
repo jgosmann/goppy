@@ -62,38 +62,6 @@ class KernelTest(object):
         assert_that(kernel.variance, is_(equal_to(0.5)))
 
 
-class TestSquaredExponentialKernel(KernelTest):
-    @property
-    def datasets(self):
-        return [
-            {
-                'x1': np.array([[1, 1, 1], [1, 2, 1]]),
-                'x2': np.array([[1, 2, 3], [4, 2, 1]]),
-                'params': {
-                    'lengthscales': [0.6],
-                    'variance': 0.75
-                },
-                'y': np.array([
-                    [0.00072298179430063214, 6.9693689985354893e-07],
-                    [0.00289944010460460330, 2.7949898790590032e-06]]),
-                'derivative': np.array([
-                    [[0.0, 0.00200828, 0.00401657],
-                     [5.80780750e-06, 1.93593583e-06, 0.0]],
-                    [[0.0, 0.0, 0.016108],
-                     [2.32915823e-05, 0.00000000e+00, 0.00000000e+00]]]),
-                'param_derivatives': [
-                    np.array([[3.34713794e-02, 6.45311944e-05],
-                              [1.07386671e-01, 2.32915823e-04]]),
-                    np.array([[9.63975726e-04, 9.29249200e-07],
-                              [3.86592014e-03, 3.72665317e-06]])
-                ]
-            }
-        ]
-
-    def create_kernel(self, **kwargs):
-        return SquaredExponentialKernel(**kwargs)
-
-
 class TestExponentialKernel(KernelTest):
     @property
     def datasets(self):
@@ -189,3 +157,35 @@ class TestMatern52Kernel(KernelTest):
 
     def create_kernel(self, **kwargs):
         return Matern52Kernel(**kwargs)
+
+
+class TestSquaredExponentialKernel(KernelTest):
+    @property
+    def datasets(self):
+        return [
+            {
+                'x1': np.array([[1, 1, 1], [1, 2, 1]]),
+                'x2': np.array([[1, 2, 3], [4, 2, 1]]),
+                'params': {
+                    'lengthscales': [0.6],
+                    'variance': 0.75
+                },
+                'y': np.array([
+                    [0.00072298179430063214, 6.9693689985354893e-07],
+                    [0.00289944010460460330, 2.7949898790590032e-06]]),
+                'derivative': np.array([
+                    [[0.0, 0.00200828, 0.00401657],
+                     [5.80780750e-06, 1.93593583e-06, 0.0]],
+                    [[0.0, 0.0, 0.016108],
+                     [2.32915823e-05, 0.00000000e+00, 0.00000000e+00]]]),
+                'param_derivatives': [
+                    np.array([[3.34713794e-02, 6.45311944e-05],
+                              [1.07386671e-01, 2.32915823e-04]]),
+                    np.array([[9.63975726e-04, 9.29249200e-07],
+                              [3.86592014e-03, 3.72665317e-06]])
+                ]
+            }
+        ]
+
+    def create_kernel(self, **kwargs):
+        return SquaredExponentialKernel(**kwargs)
