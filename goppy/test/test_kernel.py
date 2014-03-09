@@ -4,7 +4,7 @@ from hamcrest import assert_that, is_, equal_to
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
 
-from ..kernel import ExponentialKernel, Matern32Kernel, \
+from ..kernel import ExponentialKernel, Matern32Kernel, Matern52Kernel, \
     SquaredExponentialKernel
 
 
@@ -157,3 +157,35 @@ class TestMatern32Kernel(KernelTest):
 
     def create_kernel(self, **kwargs):
         return Matern32Kernel(**kwargs)
+
+
+class TestMatern52Kernel(KernelTest):
+    @property
+    def datasets(self):
+        return [
+            {
+                'x1': np.array([[1, 1, 1], [1, 2, 1]]),
+                'x2': np.array([[1, 2, 3], [4, 2, 1]]),
+                'params': {
+                    'lengthscales': [0.6],
+                    'variance': 0.75
+                },
+                'y': np.array([
+                    [0.00585567, 0.00033752],
+                    [0.01172022, 0.0005632]]),
+                'derivative': np.array([
+                    [[0.0, 0.00778975, 0.0155795],
+                     [0.00101443, 0.00033814, 0.0]],
+                    [[0.0, 0.0, 0.03401239],
+                     [0.00176941, 0.0, 0.0]]]),
+                'param_derivatives': [
+                    np.array([[0.25815405, 0.04569556],
+                              [0.37882633, 0.06316224]]),
+                    np.array([[0.03356713, 0.00411306],
+                              [0.05560057, 0.00600802]])
+                ]
+            }
+        ]
+
+    def create_kernel(self, **kwargs):
+        return Matern52Kernel(**kwargs)
