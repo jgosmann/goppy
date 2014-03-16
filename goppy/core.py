@@ -76,6 +76,16 @@ class OnlineGP(object):
     inv_cov_matrix = property(_get_inv_cov_matrix, fdel=_del_inv_cov_matrix)
 
     def fit(self, x, y):
+        """Fits the Gaussian process to training data.
+
+        Parameters
+        ----------
+        x : (`N`, `D`) array-like
+            The `N` input data points of dimension `D` to train on.
+        y : (`N`, `D`) array-like
+            The `N` training targets with `D` independent dimensions.
+        """
+
         x = np.asarray(x)
         y = np.asarray(y)
 
