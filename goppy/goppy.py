@@ -137,7 +137,7 @@ class OnlineGP(object):
                     'ij,ji->i', grad_weighting, param_deriv))
                 for param_deriv in self.kernel.full(
                     self.x_train, self.x_train, what='param_derivatives')[
-                        'param_derivatives']])
+                    'param_derivatives']])
         return res
 
 
