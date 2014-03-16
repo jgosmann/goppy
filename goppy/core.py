@@ -1,4 +1,4 @@
-"""Module providing an online Gaussian process."""
+"""The GopPy core classes."""
 
 import numpy as np
 from numpy.linalg import cholesky, inv
