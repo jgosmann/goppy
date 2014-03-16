@@ -163,6 +163,39 @@ class OnlineGP(object):
         del self.inv_cov_matrix
 
     def predict(self, x, what=('mean',)):
+        r"""Predict with the Gaussian process.
+
+        Depending on the values included in the `what` parameter different
+        predictions will be made:
+
+        * ``'mean'``: Mean prediction of the Gaussian process of shape (`N`,
+          `D`).
+        * ``'mse'``: Predictive variance of the Gaussian process of shape
+          (`N`,).
+        * ``'derivative'``: Predicted derivative of the mean.
+          ``res['derivative'][i, :, j]`` will correspond to
+          :math:`\left(\frac{\partial \mu}{\partial x_j}\right)
+          \left(x_i\right)` with the `i`-th input data point :math:`x_i`,
+          and mean function :math:`\mu(x)`.
+        * ``'mse_derivative'``: Predicted derivative of the variance.
+          ``res['mse_derivative'][i, :]`` will correspond to
+          :math:`\left(\frac{d \sigma^2}{d x}\right)
+          \left(x_i\right)` with the `i`-th input data point :math:`x_i`,
+          and variance function :math:`\sigma^2(x)`.
+
+        Parameters
+        ----------
+        x : (`N`, `D`) array-like
+            The `N` data points of dimension `D` to predict data for.
+        what : set-like, optional
+            Types of predictions to be made (see above).
+
+        Returns
+        -------
+        dict
+            Dictionary with the elements of `what` as keys and the
+            corresponding predictions as values.
+        """
         pred = {}
 
         if 'derivative' in what or 'mse_derivative' in what:
