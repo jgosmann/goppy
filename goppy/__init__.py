@@ -1,1 +1,1 @@
-from .goppy import OnlineGP
+from .core import OnlineGP
