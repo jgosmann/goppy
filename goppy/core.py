@@ -44,9 +44,6 @@ class OnlineGP(object):
         Inverted lower Cholesky factor of the covariance matrix
         (upper triangular matrix). This will be ``None`` as long as the
         Gaussian process has not been trained.
-    inv_cov_matrix : (`N`, `N`) ndarray
-        Inverted covariance matrix. Cannot be accessed before the Gaussian
-        process has been trained.
     trained : bool
         Indicates that the Gaussian process has been fitted to some training
         data.
@@ -76,15 +73,19 @@ class OnlineGP(object):
         self.__inv_cov_matrix = None
         self.trained = False
 
-    def _get_inv_cov_matrix(self):
+    @property
+    def inv_cov_matrix(self):
+        """ Inverted covariance matrix.
+
+        Cannot be accessed before the Gaussian process has been trained.
+        """
         if self.__inv_cov_matrix is None:
             self.__inv_cov_matrix = np.dot(self.inv_chol.T, self.inv_chol)
         return self.__inv_cov_matrix
 
-    def _del_inv_cov_matrix(self):
+    @inv_cov_matrix.deleter
+    def inv_cov_matrix(self):
         self.__inv_cov_matrix = None
-
-    inv_cov_matrix = property(_get_inv_cov_matrix, fdel=_del_inv_cov_matrix)
 
     def fit(self, x, y):
         """Fits the Gaussian process to training data.
