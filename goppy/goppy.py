@@ -6,6 +6,9 @@ from numpy.linalg import cholesky, inv
 from .growable import GrowableArray
 
 
+__all__ = ['OnlineGP']
+
+
 class OnlineGP(object):
     def __init__(
             self, kernel, noise_var=0.0, expected_size=None,
