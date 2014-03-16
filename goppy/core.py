@@ -230,6 +230,28 @@ class OnlineGP(object):
         return pred
 
     def calc_log_likelihood(self, what=('value',)):
+        r"""Calculate the log likelihood or its derivative of the Gaussian
+        process.
+
+        Depending on the values included in the `what` parameter different
+        values will be calculated:
+
+        * ``'value'``: The log likelihood of the Gaussian process as scalar.
+        * ``'derivative'``: Partial derivatives of the log likelihood for each
+            kernel parameter as array. See the ``params`` property of the used
+            kernel for the order.
+
+        Parameters
+        ----------
+        what : set-like, optional
+            Values to calculate (see above).
+
+        Returns
+        -------
+        dict
+            Dictionary with the elements of `what` as keys and the
+            corresponding calculated values.
+        """
         res = {}
         svs = np.dot(self.inv_chol, self.y_train)
         if 'value' in what:
