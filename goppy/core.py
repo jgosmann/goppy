@@ -10,6 +10,48 @@ __all__ = ['OnlineGP']
 
 
 class OnlineGP(object):
+    """Online Gaussian Process.
+
+    Provides a Gaussian process to which further data can be efficiently added
+    after the initial training.
+
+    Parameters
+    ----------
+    kernel : kernel object
+        Covariance function of the Gaussian process.
+    noise_var : float, optional
+        The assumed variance of the noise on the training targets.
+    expected_size : int, optional
+        The overall expected number of training samples to be added to the
+        Gaussian process. Setting this parameters can be more efficient memory
+        reallocations are avoided.
+    buffer_factory : function, optional
+        Function to call to create buffer arrays for data storage.
+
+    Attributes
+    ----------
+    kernel : kernel object
+        Covariance function of the Gaussian process.
+    noise_var : float, optional
+        The assumed variance of the noise on the training targets.
+    x_train : (`N`, `D`) ndarray
+        The `N` training data inputs of dimension `D`. This will be ``None`` as
+        long as the Gaussian process has not been trained.
+    y_train : ndarray
+        The `N` training data targets of dimension `D`. This will be ``None``
+        as long as the Gaussian process has not been trained.
+    inv_chol : (`N`, `N`) ndarray
+        Inverted lower Cholesky factor of the covariance matrix
+        (upper triangular matrix). This will be ``None`` as long as the
+        Gaussian process has not been trained.
+    inv_cov_matrix : (`N`, `N`) ndarray
+        Inverted covariance matrix. Cannot be accessed before the Gaussian
+        process has been trained.
+    trained : bool
+        Indicates that the Gaussian process has been fitted to some training
+        data.
+    """
+
     def __init__(
             self, kernel, noise_var=0.0, expected_size=None,
             buffer_factory=GrowableArray):
