@@ -119,6 +119,17 @@ class OnlineGP(object):
         self.trained = True
 
     def add(self, x, y):
+        """Adds additional training data to the Gaussian process and adjusts
+        the fit.
+
+        Parameters
+        ----------
+        x : (`N`, `D`) array-like
+            The `N` input data points of dimension `D` to train on.
+        y : (`N`, `D`) array-like
+            The `N` training targets with `D` independent dimensions.
+        """
+
         if len(x) <= 0:
             return
 
