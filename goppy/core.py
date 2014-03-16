@@ -50,6 +50,17 @@ class OnlineGP(object):
     trained : bool
         Indicates that the Gaussian process has been fitted to some training
         data.
+
+    Examples
+    --------
+
+    >>> from goppy import OnlineGP, SquaredExponentialKernel
+    >>> gp = OnlineGP(SquaredExponentialKernel([1.0]), noise_var=0.1)
+    >>> gp.fit(np.array([[2, 4]]).T, np.array([[3, 1]]).T)
+    >>> gp.add(np.array([[0]]), np.array([[3]]))
+    >>> gp.predict(np.array([[1, 3]]).T)
+    {'mean': array([[ 2.91154709],
+           [ 1.82863199]])}
     """
 
     def __init__(
