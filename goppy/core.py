@@ -3,7 +3,7 @@
 import numpy as np
 from numpy.linalg import cholesky, inv
 
-from .growable import GrowableArray
+from goppy.growable import GrowableArray
 
 
 __all__ = ['OnlineGP']
