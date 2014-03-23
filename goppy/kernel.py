@@ -3,7 +3,14 @@
 import numpy as np
 
 
-class ExponentialKernel(object):
+class Kernel(object):
+    """Abstract base class for kernels."""
+
+    def full(self, x1, x2, what=('y',)):
+        raise NotImplementedError()
+
+
+class ExponentialKernel(Kernel):
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
@@ -49,7 +56,7 @@ class ExponentialKernel(object):
             np.sum(np.square(x2), 1)[None, :])))
 
 
-class Matern32Kernel(object):
+class Matern32Kernel(Kernel):
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
@@ -97,7 +104,7 @@ class Matern32Kernel(object):
             np.sum(np.square(x2), 1)[None, :])))
 
 
-class Matern52Kernel(object):
+class Matern52Kernel(Kernel):
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
@@ -152,7 +159,7 @@ class Matern52Kernel(object):
             np.sum(np.square(x2), 1)[None, :])))
 
 
-class SquaredExponentialKernel(object):
+class SquaredExponentialKernel(Kernel):
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
