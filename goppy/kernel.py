@@ -6,6 +6,9 @@ import numpy as np
 class Kernel(object):
     """Abstract base class for kernels."""
 
+    def __call__(self, x1, x2):
+        return self.full(x1, x2, what=('y',))['y']
+
     def full(self, x1, x2, what=('y',)):
         r"""Evaluate the kernel for all pairs of `x1` and `x2`.
 
@@ -65,9 +68,6 @@ class ExponentialKernel(Kernel):
         self.lengthscales = np.asarray(values[:-1])
         self.variance = values[-1]
 
-    def __call__(self, x1, x2):
-        return self.full(x1, x2, what=('y',))['y']
-
     def full(self, x1, x2, what=('y',)):
         res = {}
         d = self._calc_distance(x1, x2)
@@ -110,9 +110,6 @@ class Matern32Kernel(Kernel):
     def params(self, values):
         self.lengthscales = np.asarray(values[:-1])
         self.variance = values[-1]
-
-    def __call__(self, x1, x2):
-        return self.full(x1, x2, what=('y',))['y']
 
     def full(self, x1, x2, what=('y',)):
         res = {}
@@ -158,9 +155,6 @@ class Matern52Kernel(Kernel):
     def params(self, values):
         self.lengthscales = np.asarray(values[:-1])
         self.variance = values[-1]
-
-    def __call__(self, x1, x2):
-        return self.full(x1, x2, what=('y',))['y']
 
     def full(self, x1, x2, what=('y',)):
         res = {}
@@ -213,9 +207,6 @@ class SquaredExponentialKernel(Kernel):
     def params(self, values):
         self.lengthscales = np.asarray(values[:-1])
         self.variance = values[-1]
-
-    def __call__(self, x1, x2):
-        return self.full(x1, x2, what=('y',))['y']
 
     def full(self, x1, x2, what=('y',)):
         res = {}
