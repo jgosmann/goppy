@@ -1,4 +1,4 @@
-"""Module providing kernels for the use with Gaussian processes."""
+"""Provides kernels for the use with Gaussian processes."""
 
 import numpy as np
 
@@ -7,6 +7,47 @@ class Kernel(object):
     """Abstract base class for kernels."""
 
     def full(self, x1, x2, what=('y',)):
+        r"""Evaluate the kernel for all pairs of `x1` and `x2`.
+
+        Depending on the values included in the `what` parameter different
+        evaluations will be made:
+
+        * ``'y'``: Evaluate the kernel for each pair of `x1` and `x2` resulting
+          in the Gram matrix.
+        * ``'derivative'``: Evaluate the partial derivatives.
+          ``res['derivative'][i, j, :]`` will correspond to
+          :math:`\left(\frac{\partial k}{d\mathtt{x2}}\right)
+          \left(\mathtt{x1}_i, \mathtt{x2}_j\right)` with subscripts denoting
+          input data points, and the kernel
+          :math:`k(\mathtt{x1}, \mathtt{x2})`.
+        * ``'param_derivatives'``: Evaluate the partial derivatives of the
+          kernel parameters. ``res['param_derivatives']`` will be a list with
+          the :math:`i`-th element corresponding to
+          :math:`\left(\frac{\partial k}{d\theta_i}\right)
+          \left(\mathtt{x1}, \mathtt{x2}\right)` wherein :math:`\theta_i` is
+          the :math:`i`-th parameter. The order of the parameters is the same
+          as in attr:`params`.
+
+        An implementation of a kernel is not required to provide the
+        functionality to evaluate ``'derivative'`` and/or
+        ``'param_derivatives'``. In this case the set of available predictions
+        of a Gaussian Process might be limited. All the GopPy standard kernels
+        implement the complete functionality described above.
+
+        Parameters
+        ----------
+        x1, x2 : (`N`, `D`) array-like
+            The `N` data points of dimension `D` to evaluate the kernel for.
+        what : set-like, optional
+            Types of evaluations to be made (see above).
+
+        Returns
+        -------
+        dict
+            Dictionary with the elements of `what` as keys and the
+            corresponding evaluations as values.
+
+        """
         raise NotImplementedError()
 
 

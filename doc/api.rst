@@ -12,3 +12,10 @@ growable module
 
 .. automodule:: goppy.growable
     :members:
+
+kernel module
+-------------
+
+.. automodule:: goppy.kernel
+    :members:
+    :show-inheritance:
