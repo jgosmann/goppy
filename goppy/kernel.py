@@ -4,7 +4,13 @@ import numpy as np
 
 
 class Kernel(object):
-    """Abstract base class for kernels."""
+    """Abstract base class for kernels.
+
+    Attributes
+    ----------
+    params : 1d ndarray
+        Array representation of the kernel parameters.
+    """
 
     def __call__(self, x1, x2):
         return self.full(x1, x2, what=('y',))['y']
@@ -29,7 +35,7 @@ class Kernel(object):
           :math:`\left(\frac{\partial k}{d\theta_i}\right)
           \left(\mathtt{x1}, \mathtt{x2}\right)` wherein :math:`\theta_i` is
           the :math:`i`-th parameter. The order of the parameters is the same
-          as in attr:`params`.
+          as in the :attr:`params` attribute.
 
         An implementation of a kernel is not required to provide the
         functionality to evaluate ``'derivative'`` and/or
@@ -50,6 +56,25 @@ class Kernel(object):
             Dictionary with the elements of `what` as keys and the
             corresponding evaluations as values.
 
+        """
+        raise NotImplementedError()
+
+    def diag(self, x1, x2):
+        """Evaluate the kernel only for the diagonal of the resulting matrix.
+
+        If only the diagonal is needed, this functions may be more efficient
+        than calculating the full Gram matrix with :func:`full`.
+
+        Parameters
+        ----------
+        x1, x2 : (`N`, `D`) array-like
+            The `N` data points of dimension `D` to evaluate the kernel for.
+
+        Returns
+        -------
+        1d ndarray
+            The diagonal of the resulting Gram matrix from evaluating the
+            kernels for pairs from `x1` and `x2`.
         """
         raise NotImplementedError()
 
