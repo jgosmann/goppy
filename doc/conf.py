@@ -32,11 +32,15 @@ sys.path.insert(0, os.path.abspath('..'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
     'numpydoc'
 ]
 numpydoc_show_class_members = False
+intersphinx_mapping = {
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None)
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

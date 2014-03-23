@@ -4,24 +4,38 @@ import numpy as np
 
 
 class GrowableArray(object):
-
     """An array which can be enlarged after creation.
 
-    Though this is not a subclass of numpy.ndarray, it implements the same
-    interface.
+    Though this is not a subclass of :class:`numpy.ndarray`, it implements
+    the same interface.
 
-    :type shape: int or tuple of int
-    :param shape: Initial shape of the created empty array.
-    :type dtype: data-type, optional
-    :param data-type dtype: Desired output data-type.
-    :type order: {'C', 'F'}, optional
-    :param order: Whether to store multi-dimensional data in C (row-major)
-        or Fortran (column-major) order in memory.
-    :type buffer_shape: int or tuple of int, optional
-    :param buffer_shape: Initial shape of the buffer in the background. As long
-        as the array shape stays below the buffer shape no new memory has to
+    Parameters
+    ----------
+    shape : int or tuple of int
+        Initial shape of the created empty array.
+    dtype : data-type, optional
+        Desired output data-type.
+    order : {'C', 'F'}, optional
+        Whether to store multi-dimensional data in C (row-major) or Fortran
+        (column-major) order in memory.
+    buffer_shape : int or tuple of int, optional
+        Initial shape of the buffer to hold the actual data. As long as the
+        array shape stays below the buffer shape no new memory has to
         reallocated.
 
+    Examples
+    --------
+
+    >>> from goppy.growable import GrowableArray
+    >>> a = GrowableArray((1, 1))
+    >>> a[:, :] = 1
+    >>> print a
+    [[ 1.]]
+    >>> a.grow_by((1, 2))
+    >>> a[:, :] = 2
+    >>> print a
+    [[ 2.  2.  2.]
+     [ 2.  2.  2.]]
     """
 
     MARGIN_FACTOR = 2
@@ -62,9 +76,10 @@ class GrowableArray(object):
     def grow_by(self, amount):
         """Grow the array.
 
-        :type amount: int or tuple of int
-        :param amount: Amount by which each dimension will be enlarged.
-
+        Parameters
+        ----------
+        amount : int or tuple of int
+            Amount by which each dimension will be enlarged.
         """
         amount = np.asarray(amount, dtype=int)
         # TODO unit test equal 0 works
