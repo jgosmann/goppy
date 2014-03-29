@@ -1,7 +1,7 @@
-.. image:: https://coveralls.io/repos/jgosmann/goppy/badge.png?branch=master
-  :target: https://coveralls.io/r/jgosmann/goppy?branch=master
 .. image:: https://travis-ci.org/jgosmann/goppy.svg?branch=master
   :target: https://travis-ci.org/jgosmann/goppy
+.. image:: https://coveralls.io/repos/jgosmann/goppy/badge.png?branch=master
+  :target: https://coveralls.io/r/jgosmann/goppy?branch=master
 
 GopPy (Gaussian Online Processes for Python)
 ============================================
