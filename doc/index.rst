@@ -18,6 +18,7 @@ The features include:
 * Prediction of first order derivatives.
 * Estimation of the log likelihood and its derivative.
 * Well documented.
+* `Good test coverage. <https://coveralls.io/r/jgosmann/goppy>`_
 
 Contents:
 
