@@ -26,4 +26,11 @@ The documentation can be found at http://goppy.readthedocs.org/en/latest/.
 Installation
 ------------
 
-TODO
+You can install GopPy with pip::
+
+    pip install goppy
+
+Or you `download the latest source distribution from PyPI
+<https://pypi.python.org/pypi/GopPy/>`_, extract it and run::
+
+    python setup.py install
