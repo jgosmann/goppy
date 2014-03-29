@@ -175,6 +175,14 @@ class TestOnlineGP(object):
         assert_almost_equal(gp.calc_log_likelihood(
             what=('derivative',))['derivative'], derivative)
 
+    def test_each_call_to_fit_discards_current_fit(self):
+        training = self.datasets[0]['training']
+        test = self.datasets[0]['tests'][0]
+        gp = GPBuilder().with_training_config(training).build()
+        gp.fit(np.asarray(training['X']) + 10, 2 * np.asarray(training['Y']))
+        gp.fit(training['X'], training['Y'])
+        self._assert_prediction_matches_data(gp, test)
+
 
 class TestLazyVarCollection(object):
     def test_returns_function_return_value_on_var_request(self):
