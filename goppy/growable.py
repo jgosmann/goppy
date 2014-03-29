@@ -65,11 +65,9 @@ class GrowableArray(object):
     def __len__(self):
         return self._view.__len__()
 
-    # TODO unittest
     def __repr__(self):
         return repr(self._view)
 
-    # TODO unittest
     def __str__(self):
         return str(self._view)
 
@@ -82,10 +80,8 @@ class GrowableArray(object):
             Amount by which each dimension will be enlarged.
         """
         amount = np.asarray(amount, dtype=int)
-        # TODO unit test equal 0 works
         assert np.all(amount >= 0)
         new_shape = np.asarray(self.shape, dtype=int) + amount
-        # TODO unittest data stays at the right place
         if np.any(self._data.shape < new_shape):
             self._data = np.empty(self.ENLARGE_FACTOR * new_shape)
             self._data[[slice(None, s) for s in self._view.shape]] = self._view

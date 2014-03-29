@@ -43,6 +43,19 @@ class TestGrowableArray(object):
         garray[:, :] = 1
         assert_array_equal(garray, np.ones((12, 22)))
 
+    def test_can_grow_array_by_0(self):
+        garray = GrowableArray((2, 2))
+        garray[:, :] = 1
+        garray.grow_by((0, 0))
+        assert_array_equal(garray, np.ones((2, 2)))
+
+    def test_growing_array_does_not_mess_up_data(self):
+        garray = GrowableArray((2, 2))
+        data = [[1, 2], [3, 4]]
+        garray[:, :] = data
+        garray.grow_by((2, 2))
+        assert_array_equal(garray[:2, :2], data)
+
     def test_can_be_used_in_ufunc(self):
         garray = GrowableArray((3,))
         garray[:] = [1, 2, 3]
@@ -67,3 +80,15 @@ class TestGrowableArray(object):
     def test_cannot_delete_array_elements(self):
         garray = GrowableArray((3,))
         del garray[1]
+
+    def test_has_array_repr(self):
+        garray = GrowableArray((3,))
+        array = np.array([1, 2, 3], dtype=garray.dtype)
+        garray[:] = array
+        assert_that(repr(garray), is_(repr(array)))
+
+    def test_has_array_str_conversion(self):
+        garray = GrowableArray((3,))
+        array = np.array([1, 2, 3], dtype=garray.dtype)
+        garray[:] = array
+        assert_that(str(garray), is_(str(array)))
