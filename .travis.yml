@@ -5,4 +5,6 @@ python:
     - "2.6"
 install:
     - pip install -r requirements.txt
-script: nosetests
+    - pip install coveralls
+script:
+    nosetests --with-coverage --cover-package=goppy
