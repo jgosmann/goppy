@@ -89,7 +89,7 @@ class Kernel(object):
         full
 
         """
-        raise NotImplementedError()
+        return np.diag(self(x1, x2))
 
 
 class ExponentialKernel(Kernel):
