@@ -1,3 +1,4 @@
 pyhamcrest
 numpy
 numpydoc
+matplotlib
