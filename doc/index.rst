@@ -19,6 +19,7 @@ The features include:
 * Estimation of the log likelihood and its derivative.
 * Well documented.
 * `Good test coverage. <https://coveralls.io/r/jgosmann/goppy>`_
+* :download:`MIT license <../LICENSE>`.
 
 Contents:
 
