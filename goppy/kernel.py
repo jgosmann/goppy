@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Provides kernels for the use with Gaussian processes."""
 
 import numpy as np
@@ -5,6 +6,9 @@ import numpy as np
 
 class Kernel(object):
     """Abstract base class for kernels.
+
+    An instance of this class is callable and ``instance(x1, x2)`` will call
+    ``instance.full(x1, x2)``.
 
     Attributes
     ----------
@@ -56,6 +60,10 @@ class Kernel(object):
             Dictionary with the elements of `what` as keys and the
             corresponding evaluations as values.
 
+        See Also
+        --------
+        diag
+
         """
         raise NotImplementedError()
 
@@ -75,17 +83,42 @@ class Kernel(object):
         1d ndarray
             The diagonal of the resulting Gram matrix from evaluating the
             kernels for pairs from `x1` and `x2`.
+
+        See Also
+        --------
+        full
+
         """
         raise NotImplementedError()
 
 
 class ExponentialKernel(Kernel):
+    r"""Exponential kernel.
+
+    The exponential kernel is defined as :math:`k(r_i) = \sigma^2
+    \exp\left(-\frac{r_i}{l_i}\right)` with
+    :math:`r = |\mathtt{x1} - \mathtt{x2}|`, kernel variance :math:`\sigma^2`
+    and length scales :math:`l`.
+
+    Parameters
+    ----------
+    lengthscales : (`D`,) array-like
+        The length scale :math:`l_i` for each dimension.
+    variance : float
+        The kernel variance :math:`\sigma^2`.
+    """
+
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
 
     @property
     def params(self):
+        """1d-array of kernel parameters.
+
+        The first `D` values are the length scales for each dimension and the
+        last values is the kernel variance.
+        """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
     @params.setter
@@ -123,12 +156,33 @@ class ExponentialKernel(Kernel):
 
 
 class Matern32Kernel(Kernel):
+    r"""Matérn 3/2 kernel.
+
+    The Matérn kernel with :math:`\nu = \frac{3}{2}` is defined as
+    :math:`k(r_i) = \sigma^2 \left(1 + \frac{r_i \sqrt{3}}{l_i}\right)
+    \exp\left(-\frac{r_i \sqrt{3}}{l_i}\right)` with
+    :math:`r = |\mathtt{x1} - \mathtt{x2}|`, kernel variance :math:`\sigma^2`
+    and length scales :math:`l`.
+
+    Parameters
+    ----------
+    lengthscales : (`D`,) array-like
+        The length scale :math:`l_i` for each dimension.
+    variance : float
+        The kernel variance :math:`\sigma^2`.
+    """
+
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
 
     @property
     def params(self):
+        """1d-array of kernel parameters.
+
+        The first `D` values are the length scales for each dimension and the
+        last values is the kernel variance.
+        """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
     @params.setter
@@ -168,12 +222,34 @@ class Matern32Kernel(Kernel):
 
 
 class Matern52Kernel(Kernel):
+    r"""Matérn 5/2 kernel.
+
+    The Matérn kernel with :math:`\nu = \frac{5}{2}` is defined as
+    :math:`k(r_i) = \sigma^2 \left(1 + \frac{r_i \sqrt{5}}{l_i} +
+    \frac{5 r_i^2}{3 l_i^2}\right)
+    \exp\left(-\frac{r_i \sqrt{5}}{l_i}\right)` with
+    :math:`r = |\mathtt{x1} - \mathtt{x2}|`, kernel variance :math:`\sigma^2`
+    and length scales :math:`l`.
+
+    Parameters
+    ----------
+    lengthscales : (`D`,) array-like
+        The length scale :math:`l_i` for each dimension.
+    variance : float
+        The kernel variance :math:`\sigma^2`.
+    """
+
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
 
     @property
     def params(self):
+        """1d-array of kernel parameters.
+
+        The first `D` values are the length scales for each dimension and the
+        last values is the kernel variance.
+        """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
     @params.setter
@@ -220,12 +296,32 @@ class Matern52Kernel(Kernel):
 
 
 class SquaredExponentialKernel(Kernel):
+    r"""Squared exponential kernel.
+
+    The squared exponential kernel is defined as :math:`k(r_i) = \sigma^2
+    \exp\left(-\frac{r_i^2}{2 l_i}\right)` with
+    :math:`r = |\mathtt{x1} - \mathtt{x2}|`, kernel variance :math:`\sigma^2`
+    and length scales :math:`l`.
+
+    Parameters
+    ----------
+    lengthscales : (`D`,) array-like
+        The length scale :math:`l_i` for each dimension.
+    variance : float
+        The kernel variance :math:`\sigma^2`.
+    """
+
     def __init__(self, lengthscales, variance=1.0):
         self.lengthscales = np.asarray(lengthscales)
         self.variance = variance
 
     @property
     def params(self):
+        """1d-array of kernel parameters.
+
+        The first `D` values are the length scales for each dimension and the
+        last values is the kernel variance.
+        """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
     @params.setter
