@@ -3,8 +3,8 @@
 .. image:: https://coveralls.io/repos/jgosmann/goppy/badge.png?branch=master
   :target: https://coveralls.io/r/jgosmann/goppy?branch=master
 
-GopPy (Gaussian Online Processes for Python)
-============================================
+Overview
+========
 
 GopPy (Gaussian Online Processes for Python) is a pure Python module providing
 a Gaussian process implementation which allows to efficiently add new data
@@ -20,6 +20,9 @@ The features include:
 * Well documented.
 * `Good test coverage. <https://coveralls.io/r/jgosmann/goppy>`_
 * MIT license.
+
+Documentation
+-------------
 
 The documentation can be found at http://goppy.readthedocs.org/en/latest/.
 
