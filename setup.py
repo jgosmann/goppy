@@ -17,6 +17,8 @@ setup(
     author_email='jan@hyper-world.de',
     url='http://jgosmann.github.io/goppy/',
     packages=['goppy', 'goppy.test'],
+    requires=['numpy'],
+    provides=['goppy'],
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
