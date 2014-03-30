@@ -8,7 +8,7 @@ with open('README.rst') as f:
 
 setup(
     name='GopPy',
-    version='0.9',
+    version='1.0',
     description='GopPy (Gaussian Online Processes for Python) is a pure '
     'Python module providing a Gaussian process implementation which allows '
     'to efficiently add new data online.',
