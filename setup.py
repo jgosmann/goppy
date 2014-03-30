@@ -15,6 +15,7 @@ setup(
     long_description=long_description,
     author='Jan Gosmann',
     author_email='jan@hyper-world.de',
+    url='http://jgosmann.github.io/goppy/',
     packages=['goppy', 'goppy.test'],
     license='MIT',
     classifiers=[
