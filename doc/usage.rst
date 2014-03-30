@@ -1,7 +1,7 @@
 Usage
 =====
 
-This section gives a small tutorial of the main functions of GopPy. A basic
+This section gives a small tutorial of the core functions of GopPy. A basic
 familiarity with Gaussian processes is assumed. Otherwise you might want to take
 a look at [1]_ first (there is also a free online version).
 
@@ -29,13 +29,14 @@ After fitting we can use the Gaussian process to make predictions about the
 mean function and obtain the associated uncertainty:
 
 .. literalinclude:: pyplots/usage/fit.py
+   :lines: 3-
 
 .. plot:: pyplots/usage/fit.py
 
 Adding New Data to a Gaussian Process
 -------------------------------------
 
-When further data is obtained this can be added easily to the Gaussian process
+When further data is obtained, these can be added easily to the Gaussian process
 by using the :meth:`.OnlineGP.add` method:
 
 .. literalinclude:: pyplots/usage/add.py
@@ -43,7 +44,7 @@ by using the :meth:`.OnlineGP.add` method:
 
 .. plot:: pyplots/usage/add.py
 
-If you would call the :meth:`.OnlineGP.fit` method multiple times, the process
+If you called the :meth:`.OnlineGP.fit` method multiple times, the process
 would be retrained discarding previous data instead of adding new data. You may
 also use :meth:`.OnlineGP.add` for the initial training without ever calling
 :meth:`.OnlineGP.fit`.

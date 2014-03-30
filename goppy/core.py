@@ -12,32 +12,32 @@ __all__ = ['OnlineGP']
 class OnlineGP(object):
     """Online Gaussian Process.
 
-    Provides a Gaussian process to which further data can be efficiently added
+    Provides a Gaussian process to which further data can be added efficiently
     after the initial training.
 
     Parameters
     ----------
-    kernel : kernel object
+    kernel : :class:`.Kernel`
         Covariance function of the Gaussian process.
     noise_var : float, optional
         The assumed variance of the noise on the training targets.
     expected_size : int, optional
         The overall expected number of training samples to be added to the
-        Gaussian process. Setting this parameters can be more efficient memory
-        reallocations are avoided.
+        Gaussian process. Setting this parameter can be more efficient as it
+        may avoid memory reallocations.
     buffer_factory : function, optional
         Function to call to create buffer arrays for data storage.
 
     Attributes
     ----------
-    kernel : kernel object
+    kernel : :class:`.Kernel`
         Covariance function of the Gaussian process.
-    noise_var : float, optional
+    noise_var : float
         The assumed variance of the noise on the training targets.
     x_train : (`N`, `D`) ndarray
         The `N` training data inputs of dimension `D`. This will be ``None`` as
         long as the Gaussian process has not been trained.
-    y_train : ndarray
+    y_train : (`N`, `D`) ndarray
         The `N` training data targets of dimension `D`. This will be ``None``
         as long as the Gaussian process has not been trained.
     inv_chol : (`N`, `N`) ndarray
@@ -45,7 +45,7 @@ class OnlineGP(object):
         (upper triangular matrix). This will be ``None`` as long as the
         Gaussian process has not been trained.
     trained : bool
-        Indicates that the Gaussian process has been fitted to some training
+        Indicates whether the Gaussian process has been fitted to some training
         data.
 
     Examples
@@ -166,7 +166,7 @@ class OnlineGP(object):
         r"""Predict with the Gaussian process.
 
         Depending on the values included in the `what` parameter different
-        predictions will be made:
+        predictions will be made and returned a dictionary ``res``:
 
         * ``'mean'``: Mean prediction of the Gaussian process of shape (`N`,
           `D`).
@@ -238,8 +238,8 @@ class OnlineGP(object):
 
         * ``'value'``: The log likelihood of the Gaussian process as scalar.
         * ``'derivative'``: Partial derivatives of the log likelihood for each
-            kernel parameter as array. See the ``params`` property of the used
-            kernel for the order.
+          kernel parameter as array. See the ``params`` property of the used
+          kernel for the order.
 
         Parameters
         ----------

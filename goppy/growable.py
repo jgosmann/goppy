@@ -21,7 +21,7 @@ class GrowableArray(object):
     buffer_shape : int or tuple of int, optional
         Initial shape of the buffer to hold the actual data. As long as the
         array shape stays below the buffer shape no new memory has to
-        reallocated.
+        allocated.
 
     Examples
     --------

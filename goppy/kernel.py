@@ -23,7 +23,7 @@ class Kernel(object):
         r"""Evaluate the kernel for all pairs of `x1` and `x2`.
 
         Depending on the values included in the `what` parameter different
-        evaluations will be made:
+        evaluations will be made and returned as a dictionary ``res``:
 
         * ``'y'``: Evaluate the kernel for each pair of `x1` and `x2` resulting
           in the Gram matrix.
@@ -34,8 +34,8 @@ class Kernel(object):
           input data points, and the kernel
           :math:`k(\mathtt{x1}, \mathtt{x2})`.
         * ``'param_derivatives'``: Evaluate the partial derivatives of the
-          kernel parameters. ``res['param_derivatives']`` will be a list with
-          the :math:`i`-th element corresponding to
+          kernel parameters. ``res['param_derivatives']`` will be a
+          list with the :math:`i`-th element corresponding to
           :math:`\left(\frac{\partial k}{d\theta_i}\right)
           \left(\mathtt{x1}, \mathtt{x2}\right)` wherein :math:`\theta_i` is
           the :math:`i`-th parameter. The order of the parameters is the same
@@ -44,7 +44,7 @@ class Kernel(object):
         An implementation of a kernel is not required to provide the
         functionality to evaluate ``'derivative'`` and/or
         ``'param_derivatives'``. In this case the set of available predictions
-        of a Gaussian Process might be limited. All the GopPy standard kernels
+        of a Gaussian process might be limited. All the GopPy standard kernels
         implement the complete functionality described above.
 
         Parameters
@@ -68,7 +68,7 @@ class Kernel(object):
         raise NotImplementedError()
 
     def diag(self, x1, x2):
-        """Evaluate the kernel only for the diagonal of the resulting matrix.
+        """Evaluate the kernel and return only the diagonal of the Gram matrix.
 
         If only the diagonal is needed, this functions may be more efficient
         than calculating the full Gram matrix with :func:`full`.
@@ -117,7 +117,7 @@ class ExponentialKernel(Kernel):
         """1d-array of kernel parameters.
 
         The first `D` values are the length scales for each dimension and the
-        last values is the kernel variance.
+        last value is the kernel variance.
         """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
@@ -181,7 +181,7 @@ class Matern32Kernel(Kernel):
         """1d-array of kernel parameters.
 
         The first `D` values are the length scales for each dimension and the
-        last values is the kernel variance.
+        last value is the kernel variance.
         """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
@@ -248,7 +248,7 @@ class Matern52Kernel(Kernel):
         """1d-array of kernel parameters.
 
         The first `D` values are the length scales for each dimension and the
-        last values is the kernel variance.
+        last value is the kernel variance.
         """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
@@ -320,7 +320,7 @@ class SquaredExponentialKernel(Kernel):
         """1d-array of kernel parameters.
 
         The first `D` values are the length scales for each dimension and the
-        last values is the kernel variance.
+        last value is the kernel variance.
         """
         return np.concatenate((self.lengthscales, (self.variance,)))
 
