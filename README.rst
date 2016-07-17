@@ -26,7 +26,7 @@ The feature list:
 Documentation
 -------------
 
-The documentation can be found at http://goppy.readthedocs.org/en/latest/.
+The documentation can be found at https://goppy.readthedocs.io/en/latest/.
 
 Installation
 ------------
