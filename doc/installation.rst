@@ -7,7 +7,7 @@ instructions. The installation is quite easy as GopPy is a pure Python package.
 Requirements
 ------------
 
-GopPy supports Python 2.6, 2.7, 3.2, and 3.3. Later versions will be likely to
+GopPy supports Python 2.6, 2.7, 3.3, 3.4, and 3.5. Later versions will be likely to
 work, too. In addition, the following package will be needed:
 
 * `NumPy <http://www.numpy.org/>`_
