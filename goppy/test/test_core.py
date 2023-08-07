@@ -1,11 +1,12 @@
 """Unit tests for goppy module."""
 
-from hamcrest import assert_that, close_to, contains_inanyorder, is_
-import numpy as np
-from numpy.testing import assert_almost_equal, assert_equal
-from unittest.mock import ANY, call, MagicMock
+from unittest.mock import ANY, MagicMock, call
 
-from ..core import _LazyVarCollection, OnlineGP
+import numpy as np
+from hamcrest import assert_that, close_to, contains_inanyorder, is_
+from numpy.testing import assert_almost_equal, assert_equal
+
+from ..core import OnlineGP, _LazyVarCollection
 from ..kernel import SquaredExponentialKernel
 
 

@@ -1,6 +1,5 @@
-from common import *
-
 import matplotlib.pyplot as plt
+from common import *
 
 test_x = np.linspace(0, 2 * np.pi)
 pred = gp.predict(np.atleast_2d(test_x).T, what=("mean", "mse"))
