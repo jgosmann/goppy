@@ -1,7 +1,8 @@
-.. image:: https://travis-ci.org/jgosmann/goppy.svg?branch=master
-  :target: https://travis-ci.org/jgosmann/goppy
-.. image:: https://coveralls.io/repos/jgosmann/goppy/badge.png?branch=master
-  :target: https://coveralls.io/r/jgosmann/goppy?branch=master
+.. image:: https://github.com/jgosmann/goppy/actions/workflows/ci.yml/badge.svg
+  :target: https://github.com/jgosmann/goppy/actions/workflows/ci.yml
+  :alt: CI and release pipeline
+.. image:: https://codecov.io/gh/jgosmann/goppy/branch/main/graph/badge.svg?token=mkgZs4nds5 
+  :target: https://codecov.io/gh/jgosmann/goppy
 
 Overview
 --------
@@ -18,7 +19,7 @@ The feature list:
 * Prediction of first order derivatives.
 * Estimation of the log likelihood and its derivative.
 * Well documented.
-* `Good test coverage. <https://coveralls.io/r/jgosmann/goppy>`_
+* `Good test coverage. <https://app.codecov.io/gh/jgosmann/goppy>`_
 * Supports Python 2.6, 2.7, 3.3, 3.4, and 3.5. Later versions are likely to work as
   well.
 * MIT license.
