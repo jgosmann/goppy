@@ -1,0 +1,41 @@
+[tool.poetry]
+authors = ["Jan Gosmann <jan@hyper-world.de>"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Topic :: Software Development",
+  "Topic :: Scientific/Engineering",
+  "Programming Language :: Python :: 2",
+  "Programming Language :: Python :: 2.6",
+  "Programming Language :: Python :: 2.7",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.2",
+  "Programming Language :: Python :: 3.3",
+]
+description = "GopPy (Gaussian Online Processes for Python) is a pure Python module providing a Gaussian process implementation which allows 'to efficiently add new data online."
+documentation = "https://goppy.readthedocs.io/en/latest/"
+homepage = "http://jgosmann.github.io/goppy/"
+keywords = ["Gaussian processes", "machine learning", "online learning"]
+license = "MIT"
+name = "goppy"
+readme = "README.rst"
+repository = "https://github.com/jgosmann/goppy"
+version = "1.0.2"
+
+[tool.poetry.dependencies]
+numpy = "^1.25.2"
+python = "^3.9"
+
+[tool.poetry.group.dev.dependencies]
+PyHamcrest = "^2.0.4"
+numpydoc = "^1.5.0"
+pytest = "^7.4.0"
+sphinx = "^7.1.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]

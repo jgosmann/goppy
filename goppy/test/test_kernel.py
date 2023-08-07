@@ -3,27 +3,16 @@
 from hamcrest import assert_that, is_, equal_to
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
+import pytest
 
 from ..kernel import ExponentialKernel, Matern32Kernel, Matern52Kernel, \
     SquaredExponentialKernel
-
 
 class KernelTest(object):
     def create_kernel(self, **kwargs):
         raise NotImplementedError()
 
-    @property
-    def datasets(self):
-        raise NotImplementedError
-
-    def test_datasets(self):
-        for dataset in self.datasets:
-            yield self.check_kernel, dataset
-            yield self.check_can_be_used_as_function, dataset
-            yield self.check_diag, dataset
-            yield self.check_diag_symmetric, dataset
-
-    def check_kernel(self, dataset):
+    def test_kernel(self, dataset):
         kernel = self.create_kernel(**dataset['params'])
         x1, x2 = (dataset['x1'], dataset['x2'])
         result = kernel.full(x1, x2, what=(
@@ -33,17 +22,17 @@ class KernelTest(object):
         assert_almost_equal(
             result['param_derivatives'], dataset['param_derivatives'])
 
-    def check_can_be_used_as_function(self, dataset):
+    def test_can_be_used_as_function(self, dataset):
         kernel = self.create_kernel(**dataset['params'])
         x1, x2 = (dataset['x1'], dataset['x2'])
         assert_equal(kernel(x1, x2), kernel.full(x1, x2)['y'])
 
-    def check_diag(self, dataset):
+    def test_diag(self, dataset):
         kernel = self.create_kernel(**dataset['params'])
         x1, x2 = (dataset['x1'], dataset['x2'])
         assert_equal(kernel.diag(x1, x2), np.diag(kernel(x1, x2)))
 
-    def check_diag_symmetric(self, dataset):
+    def test_diag_symmetric(self, dataset):
         kernel = self.create_kernel(**dataset['params'])
         x = dataset['x1']
         expected = dataset['params']['variance'] * np.ones(len(x))
@@ -63,9 +52,7 @@ class KernelTest(object):
 
 
 class TestExponentialKernel(KernelTest):
-    @property
-    def datasets(self):
-        return [
+    datasets = [
             {
                 'x1': np.array([[1, 1, 1], [1, 2, 1]]),
                 'x2': np.array([[1, 2, 3], [4, 2, 1]]),
@@ -93,11 +80,8 @@ class TestExponentialKernel(KernelTest):
     def create_kernel(self, **kwargs):
         return ExponentialKernel(**kwargs)
 
-
 class TestMatern32Kernel(KernelTest):
-    @property
-    def datasets(self):
-        return [
+    datasets = [
             {
                 'x1': np.array([[1, 1, 1], [1, 2, 1]]),
                 'x2': np.array([[1, 2, 3], [4, 2, 1]]),
@@ -128,9 +112,7 @@ class TestMatern32Kernel(KernelTest):
 
 
 class TestMatern52Kernel(KernelTest):
-    @property
-    def datasets(self):
-        return [
+    datasets = [
             {
                 'x1': np.array([[1, 1, 1], [1, 2, 1]]),
                 'x2': np.array([[1, 2, 3], [4, 2, 1]]),
@@ -153,16 +135,14 @@ class TestMatern52Kernel(KernelTest):
                               [0.05560057, 0.00600802]])
                 ]
             }
-        ]
+]
 
     def create_kernel(self, **kwargs):
         return Matern52Kernel(**kwargs)
 
 
 class TestSquaredExponentialKernel(KernelTest):
-    @property
-    def datasets(self):
-        return [
+    datasets = [
             {
                 'x1': np.array([[1, 1, 1], [1, 2, 1]]),
                 'x2': np.array([[1, 2, 3], [4, 2, 1]]),
@@ -185,7 +165,7 @@ class TestSquaredExponentialKernel(KernelTest):
                               [3.86592014e-03, 3.72665317e-06]])
                 ]
             }
-        ]
+]
 
     def create_kernel(self, **kwargs):
         return SquaredExponentialKernel(**kwargs)

@@ -1,8 +1,8 @@
 """Unit test for growable module."""
 
 from hamcrest import assert_that, is_, is_not, same_instance
-from nose.tools import raises
 import numpy as np
+import pytest
 from numpy.testing import assert_array_equal
 
 from ..growable import GrowableArray
@@ -30,12 +30,12 @@ class TestGrowableArray(object):
         assert_that(new_one, is_not(same_instance(garray)))
         assert_array_equal(new_one, [2, 3])
 
-    @raises(AttributeError)
     def test_new_from_template_cannot_be_grown(self):
         garray = GrowableArray((3,))
         garray[:] = [1, 2, 3]
         new_one = garray[1:]
-        new_one.grow_by((1,))
+        with pytest.raises(AttributeError):
+            new_one.grow_by((1,))
 
     def test_can_grow_array(self):
         garray = GrowableArray((2, 2))
@@ -76,10 +76,10 @@ class TestGrowableArray(object):
         garray = GrowableArray((4, 2))
         assert_that(len(garray), is_(4))
 
-    @raises(ValueError)
     def test_cannot_delete_array_elements(self):
         garray = GrowableArray((3,))
-        del garray[1]
+        with pytest.raises(ValueError):
+            del garray[1]
 
     def test_has_array_repr(self):
         garray = GrowableArray((3,))

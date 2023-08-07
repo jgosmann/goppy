@@ -1,3 +1,0 @@
-pyhamcrest
-numpy
-numpydoc
