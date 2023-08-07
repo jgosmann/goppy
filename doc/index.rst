@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. figure:: _static/goppy-sm.png   
+  :alt: GopPy logo
+
 Welcome to GopPy's documentation!
 =================================
 

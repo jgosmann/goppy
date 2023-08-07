@@ -4,6 +4,9 @@
 .. image:: https://codecov.io/gh/jgosmann/goppy/branch/main/graph/badge.svg?token=mkgZs4nds5 
   :target: https://codecov.io/gh/jgosmann/goppy
 
+.. image:: https://github.com/jgosmann/goppy/blob/main/doc/_static/goppy-sm.png   
+  :alt: GopPy logo
+
 Overview
 --------
 
