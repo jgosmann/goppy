@@ -11,7 +11,7 @@ from ..growable import GrowableArray
 class TestGrowableArray(object):
     def test_creation_of_array(self):
         shape = (2, 3, 4)
-        dtype = np.dtype('int')
+        dtype = np.dtype("int")
         garray = GrowableArray(shape, dtype)
 
         assert_that(garray.shape, is_(shape))

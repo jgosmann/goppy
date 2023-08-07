@@ -35,6 +35,7 @@ PyHamcrest = "^2.0.4"
 numpydoc = "^1.5.0"
 pytest = "^7.4.0"
 sphinx = "^7.1.2"
+black = "^23.7.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
