@@ -40,7 +40,7 @@ class GrowableArray(object):
 
     ENLARGE_FACTOR = 2
 
-    def __init__(self, shape, dtype=float, order='C', buffer_shape=None):
+    def __init__(self, shape, dtype=float, order="C", buffer_shape=None):
         if buffer_shape is None:
             buffer_shape = self.ENLARGE_FACTOR * np.asarray(shape, dtype=int)
         self._data = np.empty(buffer_shape, dtype, order)

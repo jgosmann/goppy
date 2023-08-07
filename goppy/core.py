@@ -6,7 +6,7 @@ from numpy.linalg import cholesky, inv
 from goppy.growable import GrowableArray
 
 
-__all__ = ['OnlineGP']
+__all__ = ["OnlineGP"]
 
 
 class OnlineGP(object):
@@ -61,8 +61,8 @@ class OnlineGP(object):
     """
 
     def __init__(
-            self, kernel, noise_var=0.0, expected_size=None,
-            buffer_factory=GrowableArray):
+        self, kernel, noise_var=0.0, expected_size=None, buffer_factory=GrowableArray
+    ):
         self.kernel = kernel
         self.noise_var = noise_var
         self._expected_size = expected_size
@@ -75,7 +75,7 @@ class OnlineGP(object):
 
     @property
     def inv_cov_matrix(self):
-        """ Inverted covariance matrix.
+        """Inverted covariance matrix.
 
         Cannot be accessed before the Gaussian process has been trained.
         """
@@ -112,9 +112,11 @@ class OnlineGP(object):
         self.x_train[:, :] = x
         self.y_train[:, :] = y
         self.inv_chol = self._buffer_factory(
-            (x.shape[0], x.shape[0]), buffer_shape=buffer_shape2)
-        self.inv_chol[:, :] = inv(cholesky(
-            self.kernel(x, x) + np.eye(len(x)) * self.noise_var))
+            (x.shape[0], x.shape[0]), buffer_shape=buffer_shape2
+        )
+        self.inv_chol[:, :] = inv(
+            cholesky(self.kernel(x, x) + np.eye(len(x)) * self.noise_var)
+        )
         del self.inv_cov_matrix
         self.trained = True
 
@@ -142,15 +144,16 @@ class OnlineGP(object):
 
         input_vs_train_dist = self.kernel(x, self.x_train)
         proj = np.dot(input_vs_train_dist, self.inv_chol.T)
-        covmat = self.kernel(x, x) + np.eye(len(x)) * self.noise_var - \
-            np.dot(proj, proj.T)
+        covmat = (
+            self.kernel(x, x) + np.eye(len(x)) * self.noise_var - np.dot(proj, proj.T)
+        )
         diag_indices = np.diag_indices_from(covmat)
         covmat[diag_indices] = np.maximum(self.noise_var, covmat[diag_indices])
 
         self.x_train.grow_by((len(x), 0))
         self.y_train.grow_by((len(y), 0))
-        self.x_train[-len(x):, :] = x
-        self.y_train[-len(y):, :] = y
+        self.x_train[-len(x) :, :] = x
+        self.y_train[-len(y) :, :] = y
 
         new_inv_chol = inv(cholesky(covmat))
 
@@ -158,11 +161,12 @@ class OnlineGP(object):
         self.inv_chol.grow_by((len(x), len(x)))
         self.inv_chol[:l, l:] = 0.0
         self.inv_chol[l:, :l] = -np.dot(
-            np.dot(new_inv_chol, proj), self.inv_chol[:l, :l])
+            np.dot(new_inv_chol, proj), self.inv_chol[:l, :l]
+        )
         self.inv_chol[l:, l:] = new_inv_chol
         del self.inv_cov_matrix
 
-    def predict(self, x, what=('mean',)):
+    def predict(self, x, what=("mean",)):
         r"""Predict with the Gaussian process.
 
         Depending on the values included in the `what` parameter different
@@ -198,38 +202,42 @@ class OnlineGP(object):
         """
         pred = {}
 
-        if 'derivative' in what or 'mse_derivative' in what:
-            kernel_what = ('y', 'derivative')
+        if "derivative" in what or "mse_derivative" in what:
+            kernel_what = ("y", "derivative")
         else:
-            kernel_what = ('y',)
+            kernel_what = ("y",)
 
         lazy_vars = _LazyVarCollection(
             input_vs_train_dist=lambda v: self.kernel.full(
-                x, self.x_train, kernel_what),
+                x, self.x_train, kernel_what
+            ),
             svs=lambda v: np.dot(self.inv_cov_matrix, self.y_train),
-            mean=lambda v: np.dot(v.input_vs_train_dist['y'], v.svs),
-            mse_svs=lambda v: np.dot(
-                self.inv_cov_matrix, v.input_vs_train_dist['y'].T),
+            mean=lambda v: np.dot(v.input_vs_train_dist["y"], v.svs),
+            mse_svs=lambda v: np.dot(self.inv_cov_matrix, v.input_vs_train_dist["y"].T),
             mse=lambda v: np.maximum(
                 self.noise_var,
-                self.noise_var + self.kernel.diag(x, x) - np.einsum(
-                    'ij,ji->i', v.input_vs_train_dist['y'], v.mse_svs)),
+                self.noise_var
+                + self.kernel.diag(x, x)
+                - np.einsum("ij,ji->i", v.input_vs_train_dist["y"], v.mse_svs),
+            ),
             derivative=lambda v: np.einsum(
-                'ijk,jl->ilk', v.input_vs_train_dist['derivative'], v.svs),
-            mse_derivative=lambda v: -2 * np.einsum(
-                'ijk,ji->ik', v.input_vs_train_dist['derivative'], v.mse_svs))
+                "ijk,jl->ilk", v.input_vs_train_dist["derivative"], v.svs
+            ),
+            mse_derivative=lambda v: -2
+            * np.einsum("ijk,ji->ik", v.input_vs_train_dist["derivative"], v.mse_svs),
+        )
 
-        if 'mean' in what:
-            pred['mean'] = lazy_vars.mean
-        if 'mse' in what:
-            pred['mse'] = lazy_vars.mse
-        if 'derivative' in what:
-            pred['derivative'] = lazy_vars.derivative
-        if 'mse_derivative' in what:
-            pred['mse_derivative'] = lazy_vars.mse_derivative
+        if "mean" in what:
+            pred["mean"] = lazy_vars.mean
+        if "mse" in what:
+            pred["mse"] = lazy_vars.mse
+        if "derivative" in what:
+            pred["derivative"] = lazy_vars.derivative
+        if "mse_derivative" in what:
+            pred["mse_derivative"] = lazy_vars.mse_derivative
         return pred
 
-    def calc_log_likelihood(self, what=('value',)):
+    def calc_log_likelihood(self, what=("value",)):
         r"""Calculate the log likelihood or its derivative of the Gaussian
         process.
 
@@ -254,20 +262,23 @@ class OnlineGP(object):
         """
         res = {}
         svs = np.dot(self.inv_chol, self.y_train)
-        if 'value' in what:
-            res['value'] = np.squeeze(
-                -0.5 * np.dot(svs.T, svs) +
-                np.sum(np.log(np.diag(self.inv_chol))) -
-                0.5 * len(self.y_train) * np.log(2 * np.pi))
-        if 'derivative' in what:
+        if "value" in what:
+            res["value"] = np.squeeze(
+                -0.5 * np.dot(svs.T, svs)
+                + np.sum(np.log(np.diag(self.inv_chol)))
+                - 0.5 * len(self.y_train) * np.log(2 * np.pi)
+            )
+        if "derivative" in what:
             alpha = np.dot(self.inv_chol.T, svs)
             grad_weighting = np.dot(alpha, alpha.T) - self.inv_cov_matrix
-            res['derivative'] = np.array([
-                0.5 * np.sum(np.einsum(
-                    'ij,ji->i', grad_weighting, param_deriv))
-                for param_deriv in self.kernel.full(
-                    self.x_train, self.x_train, what='param_derivatives')[
-                    'param_derivatives']])
+            res["derivative"] = np.array(
+                [
+                    0.5 * np.sum(np.einsum("ij,ji->i", grad_weighting, param_deriv))
+                    for param_deriv in self.kernel.full(
+                        self.x_train, self.x_train, what="param_derivatives"
+                    )["param_derivatives"]
+                ]
+            )
         return res
 
 

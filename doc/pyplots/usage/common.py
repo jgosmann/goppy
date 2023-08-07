@@ -1,4 +1,5 @@
 import numpy as np
+
 np.random.seed(3)  # Make the examples reproducible.
 
 n = 15
