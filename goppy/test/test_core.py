@@ -3,7 +3,7 @@
 from hamcrest import assert_that, close_to, contains_inanyorder, is_
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
-from mock import ANY, call, MagicMock
+from unittest.mock import ANY, call, MagicMock
 
 from ..core import _LazyVarCollection, OnlineGP
 from ..kernel import SquaredExponentialKernel
@@ -46,7 +46,7 @@ class GPBuilder(object):
         return OnlineGP(self.kernel, self.noise_var, **kwargs)
 
 
-class TestOnlineGP(object):
+class TestOnlineGP:
 
     datasets = [
         {
@@ -91,25 +91,23 @@ class TestOnlineGP(object):
         }
     ]
 
-    def test_prediction(self):
-        for dataset in self.datasets:
-            for test in dataset['tests']:
-                yield self.check_prediction, dataset['training'], test
+    def test_prediction(self, dataset):
+        for test in dataset['tests']:
+            self.check_prediction, dataset['training'], test
 
     def check_prediction(self, training, test):
         gp = GPBuilder().with_training_config(training).build()
         gp.fit(training['X'], training['Y'])
         self._assert_prediction_matches_data(gp, test)
 
-    def test_adding_data_online(self):
-        for dataset in self.datasets:
-            training = dataset['training']
-            gp = GPBuilder().with_training_config(training).build()
-            for x, y in zip(training['X'], training['Y']):
-                gp.add([x], [y])
+    def test_adding_data_online(self, dataset):
+        training = dataset['training']
+        gp = GPBuilder().with_training_config(training).build()
+        for x, y in zip(training['X'], training['Y']):
+            gp.add([x], [y])
 
-            for test in dataset['tests']:
-                yield self._assert_prediction_matches_data, gp, test
+        for test in dataset['tests']:
+            self._assert_prediction_matches_data, gp, test
 
     @staticmethod
     def _assert_prediction_matches_data(gp, data):
@@ -152,10 +150,9 @@ class TestOnlineGP(object):
             call(ANY, buffer_shape=(size, size))]
         assert_that(factory.mock_calls, contains_inanyorder(*expected_calls))
 
-    def test_likelihood(self):
-        for dataset in self.datasets:
-            yield self.check_likelihood, dataset['training'], \
-                dataset['log_likelihood']
+    def test_likelihood(self, dataset):
+        self.check_likelihood, dataset['training'], \
+            dataset['log_likelihood']
 
     def check_likelihood(self, training, log_likelihood):
         gp = GPBuilder().with_training_config(training).build()
@@ -164,10 +161,9 @@ class TestOnlineGP(object):
             gp.calc_log_likelihood()['value'],
             is_(close_to(log_likelihood, 1e-6)))
 
-    def test_likelihood_derivative(self):
-        for dataset in self.datasets:
-            yield self.check_likelihood_derivative, dataset['training'], \
-                dataset['log_likelihood_derivative']
+    def test_likelihood_derivative(self, dataset):
+        self.check_likelihood_derivative, dataset['training'], \
+            dataset['log_likelihood_derivative']
 
     def check_likelihood_derivative(self, training, derivative):
         gp = GPBuilder().with_training_config(training).build()

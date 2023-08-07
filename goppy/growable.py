@@ -48,7 +48,7 @@ class GrowableArray(object):
 
     @staticmethod
     def __get_view_for_shape(data, shape):
-        return data.__getitem__([slice(end) for end in shape])
+        return data.__getitem__(tuple(slice(end) for end in shape))
 
     def __getattr__(self, name):
         return getattr(self._view, name)
@@ -84,5 +84,5 @@ class GrowableArray(object):
         new_shape = np.asarray(self.shape, dtype=int) + amount
         if np.any(self._data.shape < new_shape):
             self._data = np.empty(self.ENLARGE_FACTOR * new_shape)
-            self._data[[slice(None, s) for s in self._view.shape]] = self._view
+            self._data[tuple(slice(None, s) for s in self._view.shape)] = self._view
         self._view = self.__get_view_for_shape(self._data, new_shape)
