@@ -5,7 +5,6 @@ from numpy.linalg import cholesky, inv
 
 from goppy.growable import GrowableArray
 
-
 __all__ = ["OnlineGP"]
 
 

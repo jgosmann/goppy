@@ -1,8 +1,8 @@
 """Unit test for growable module."""
 
-from hamcrest import assert_that, is_, is_not, same_instance
 import numpy as np
 import pytest
+from hamcrest import assert_that, is_, is_not, same_instance
 from numpy.testing import assert_array_equal
 
 from ..growable import GrowableArray

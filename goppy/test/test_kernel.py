@@ -1,15 +1,11 @@
 """Unit tests for kernel module."""
 
-from hamcrest import assert_that, is_, equal_to
 import numpy as np
+from hamcrest import assert_that, equal_to, is_
 from numpy.testing import assert_almost_equal, assert_equal
 
-from ..kernel import (
-    ExponentialKernel,
-    Matern32Kernel,
-    Matern52Kernel,
-    SquaredExponentialKernel,
-)
+from ..kernel import (ExponentialKernel, Matern32Kernel, Matern52Kernel,
+                      SquaredExponentialKernel)
 
 
 class KernelTest(object):
