@@ -3,6 +3,16 @@
   :alt: CI and release pipeline
 .. image:: https://codecov.io/gh/jgosmann/goppy/branch/main/graph/badge.svg?token=mkgZs4nds5
   :target: https://codecov.io/gh/jgosmann/goppy
+.. image:: https://img.shields.io/pypi/v/goppy
+  :target: https://pypi.org/project/goppy/
+  :alt: PyPI
+.. image:: https://img.shields.io/pypi/pyversions/goppy
+  :target: https://pypi.org/project/goppy/
+  :alt: PyPI - Python Version
+.. image:: https://img.shields.io/pypi/l/goppy
+  :target: https://pypi.org/project/goppy/
+  :alt: PyPI - License
+
 
 .. image:: https://github.com/jgosmann/goppy/blob/main/doc/_static/goppy-sm.png
   :alt: GopPy logo
