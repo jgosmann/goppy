@@ -8,7 +8,7 @@ from goppy.growable import GrowableArray
 __all__ = ["OnlineGP"]
 
 
-class OnlineGP(object):
+class OnlineGP:
     """Online Gaussian Process.
 
     Provides a Gaussian process to which further data can be added efficiently
@@ -281,7 +281,7 @@ class OnlineGP(object):
         return res
 
 
-class _LazyVarCollection(object):
+class _LazyVarCollection:
     def __init__(self, **kwargs):
         self._eval_fns = kwargs
 

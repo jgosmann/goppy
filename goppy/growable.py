@@ -3,7 +3,7 @@
 import numpy as np
 
 
-class GrowableArray(object):
+class GrowableArray:
     """An array which can be enlarged after creation.
 
     Though this is not a subclass of :class:`numpy.ndarray`, it implements
@@ -48,7 +48,7 @@ class GrowableArray(object):
 
     @staticmethod
     def __get_view_for_shape(data, shape):
-        return data.__getitem__(tuple(slice(end) for end in shape))
+        return data[tuple(slice(end) for end in shape)]
 
     def __getattr__(self, name):
         return getattr(self._view, name)

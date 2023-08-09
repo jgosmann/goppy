@@ -12,7 +12,9 @@ from ..kernel import (
 )
 
 
-class KernelTest(object):
+class KernelTest:
+    datasets = []
+
     def create_kernel(self, **kwargs):
         raise NotImplementedError()
 

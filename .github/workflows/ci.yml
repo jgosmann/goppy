@@ -16,8 +16,8 @@ jobs:
             run: poetry run black --check .
           - name: Check import sorting
             run: poetry run isort --check-only .
-          #- name: pylint
-          #  run: poetry run pylint goppy
+          - name: pylint
+            run: poetry run pylint goppy
     steps:
       - uses: actions/checkout@v3
       - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/main:refs/remotes/origin/main

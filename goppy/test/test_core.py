@@ -10,7 +10,7 @@ from ..core import OnlineGP, _LazyVarCollection
 from ..kernel import SquaredExponentialKernel
 
 
-class GPBuilder(object):
+class GPBuilder:
     def __init__(self):
         self.kernel = SquaredExponentialKernel([1.0])
         self.noise_var = 0.01
@@ -180,7 +180,7 @@ class TestOnlineGP:
         self._assert_prediction_matches_data(gp, test)
 
 
-class TestLazyVarCollection(object):
+class TestLazyVarCollection:
     def test_returns_function_return_value_on_var_request(self):
         var_collection = _LazyVarCollection(test_var=lambda self: 23)
         assert_that(var_collection.test_var, is_(23))

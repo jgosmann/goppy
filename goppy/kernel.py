@@ -4,7 +4,7 @@
 import numpy as np
 
 
-class Kernel(object):
+class Kernel:
     """Abstract base class for kernels.
 
     An instance of this class is callable and ``instance(x1, x2)`` will call

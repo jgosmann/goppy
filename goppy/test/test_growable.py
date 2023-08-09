@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal
 from ..growable import GrowableArray
 
 
-class TestGrowableArray(object):
+class TestGrowableArray:
     def test_creation_of_array(self):
         shape = (2, 3, 4)
         dtype = np.dtype("int")
