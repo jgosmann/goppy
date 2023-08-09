@@ -33,8 +33,6 @@ The feature list:
 * Estimation of the log likelihood and its derivative.
 * Well documented.
 * `Good test coverage. <https://app.codecov.io/gh/jgosmann/goppy>`_
-* Supports Python 2.6, 2.7, 3.3, 3.4, and 3.5. Later versions are likely to work as
-  well.
 * MIT license.
 
 Documentation
@@ -48,8 +46,3 @@ Installation
 You can install GopPy with pip::
 
     pip install goppy
-
-Or you `download the latest source distribution from PyPI
-<https://pypi.python.org/pypi/GopPy/>`_, extract it and run::
-
-    python setup.py install

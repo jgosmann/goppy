@@ -22,8 +22,6 @@ The feature list:
 * Estimation of the log likelihood and its derivative.
 * Well documented.
 * `Good test coverage. <https://coveralls.io/r/jgosmann/goppy>`_
-* Supports Python 2.6, 2.7, 3.3, 3.4, and 3.5. Later versions are likely to work as
-  well.
 * :download:`MIT license <../LICENSE>`.
 
 Contents:

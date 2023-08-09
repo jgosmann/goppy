@@ -11,7 +11,7 @@ Creating and Fitting Gaussian Process
 Let us first create some toy data from a cosine:
 
 .. literalinclude:: pyplots/usage/common.py
-   :lines: 1, 3-6
+   :lines: 1, 4-7
 
 The orientation of data matrices used by GopPy is samples (rows) times
 dimensions (columns). Here we use one-dimensional input and output spaces.
@@ -23,13 +23,13 @@ a length scale of 0.5. We also use a noise variance of 0.1. The process is
 fitted to the data using the :meth:`.OnlineGP.fit` method:
 
 .. literalinclude:: pyplots/usage/common.py
-   :lines: 9-12
+   :lines: 10-13
 
 After fitting we can use the Gaussian process to make predictions about the
 mean function and obtain the associated uncertainty:
 
 .. literalinclude:: pyplots/usage/fit.py
-   :lines: 3-
+   :lines: 1, 3-
 
 .. plot:: pyplots/usage/fit.py
 
@@ -40,7 +40,7 @@ When further data is obtained, these can be added easily to the Gaussian process
 by using the :meth:`.OnlineGP.add` method:
 
 .. literalinclude:: pyplots/usage/add.py
-   :lines: 4-
+   :lines: 5-
 
 .. plot:: pyplots/usage/add.py
 

@@ -55,7 +55,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "GopPy"
-copyright = "2014, Jan Gosmann"
+copyright = "2014-2023, Jan Gosmann"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
