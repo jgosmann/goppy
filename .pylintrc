@@ -11,6 +11,8 @@
 # paths.
 ignore=CVS
 
+ignore-paths=doc
+
 # Pickle collected data for later comparisons.
 persistent=yes
 
