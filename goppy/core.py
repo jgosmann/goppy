@@ -120,8 +120,21 @@ class OnlineGP:
         self.trained = True
 
     def add(self, x, y):
-        """Adds additional training data to the Gaussian process and adjusts
+        r"""Adds additional training data to the Gaussian process and adjusts
         the fit.
+
+        The complexity of this method is in :math:`O(n \cdot \max(n^2, N^2))`
+        where
+
+        * :math:`n` is the number of data points being added,
+        * and :math:`N` is the total number of data points added so far.
+
+        This is better than re-initializing the Gaussian process, which would
+        have a complexity in :math:`O((n + N)^3)` because of the matrix
+        inversion.
+
+        `See this master's thesis for more details.
+        <https://github.com/jgosmann/goppy/files/11995181/thesis.pdf>`_
 
         Parameters
         ----------

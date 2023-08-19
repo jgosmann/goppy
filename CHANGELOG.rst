@@ -18,6 +18,8 @@ Added
 ^^^^^
 
 * Official support for Python 3.9, 3.10, and 3.11.
+* Documented computational complexity of adding new data to an online Gaussian
+  Process.
 
 Removed
 ^^^^^^^
