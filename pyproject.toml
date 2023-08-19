@@ -18,7 +18,7 @@ classifiers = [
 ]
 description = "GopPy (Gaussian Online Processes for Python) is a pure Python module providing a Gaussian process implementation which allows 'to efficiently add new data online."
 documentation = "https://goppy.readthedocs.io/en/latest/"
-homepage = "http://jgosmann.github.io/goppy/"
+homepage = "https://github.com/jgosmann/goppy"
 keywords = ["Gaussian processes", "machine learning", "online learning"]
 license = "MIT"
 name = "goppy"
@@ -34,13 +34,13 @@ python = "^3.9"
 PyHamcrest = "^2.0.4"
 black = "^23.7.0"
 isort = "^5.12.0"
+matplotlib = "^3.7.2"
 numpydoc = "^1.5.0"
+pylint = "^2.17.5"
 pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 sphinx = "^7.1.2"
-matplotlib = "^3.7.2"
 sphinx-rtd-theme = "^1.2.2"
-pylint = "^2.17.5"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
