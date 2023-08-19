@@ -33,6 +33,7 @@ Contents:
    usage
    kernel
    api
+   changelog
 
 
 
