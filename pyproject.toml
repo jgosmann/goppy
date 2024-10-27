@@ -1,7 +1,7 @@
 [tool.poetry]
 authors = ["Jan Gosmann <jan@hyper-world.de>"]
 classifiers = [
-  "Development Status :: 4 - Beta",
+  "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Intended Audience :: Information Technology",
   "Intended Audience :: Science/Research",
@@ -9,14 +9,12 @@ classifiers = [
   "Programming Language :: Python",
   "Topic :: Software Development",
   "Topic :: Scientific/Engineering",
-  "Programming Language :: Python :: 2",
-  "Programming Language :: Python :: 2.6",
-  "Programming Language :: Python :: 2.7",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 description = "GopPy (Gaussian Online Processes for Python) is a pure Python module providing a Gaussian process implementation which allows 'to efficiently add new data online."
 documentation = "https://goppy.readthedocs.io/en/latest/"
@@ -30,7 +28,7 @@ version = "1.1.1" # also update in doc/conf.py
 
 [tool.poetry.dependencies]
 numpy = ">=1.26.0,<3"
-python = ">=3.9,<3.13"
+python = ">=3.9"
 
 [tool.poetry.group.dev.dependencies]
 PyHamcrest = "^2.0.4"

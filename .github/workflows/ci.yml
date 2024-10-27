@@ -23,7 +23,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - uses: actions/cache@v4
         with:
@@ -32,9 +32,9 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .venv
-          key: ${{ runner.os }}-py3.12-venv-${{ hashFiles('pyproject.toml') }}
+          key: ${{ runner.os }}-py3.13-venv-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-py3.12-venv-
+            ${{ runner.os }}-py3.13-venv-
       - uses: ./.github/actions/setup-project
 
       - name: ${{ matrix.check.name }}
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
         include:
           - python-version: '3.9'
             numpy-version: '1.26.0'
@@ -89,7 +89,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - uses: actions/cache@v.
         with:
@@ -98,9 +98,9 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .venv
-          key: ${{ runner.os }}-py3.12-venv-${{ hashFiles('pyproject.toml') }}
+          key: ${{ runner.os }}-py3.13-venv-${{ hashFiles('pyproject.toml') }}
           restore-keys: |
-            ${{ runner.os }}-py3.12-venv-
+            ${{ runner.os }}-py3.13-venv-
       - uses: ./.github/actions/setup-project
 
       - name: Publish to PyPI
