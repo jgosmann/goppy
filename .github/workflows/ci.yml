@@ -47,6 +47,9 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
+        include:
+          - python-version: '3.9'
+            numpy-version: '1.26.0'
 
     steps:
       - uses: actions/checkout@v4
@@ -67,6 +70,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-py${{ matrix.python-version }}-venv-
       - uses: ./.github/actions/setup-project
+
+      - name: Install specific NumPy version
+        run: poetry run pip install numpy==${{ matrix.numpy-version }}
+        if: matrix.numpy-version != ''
 
       - name: Test and measure coverage with pytest
         run: poetry run pytest --verbose --cov=goppy --cov-report=xml
