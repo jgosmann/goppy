@@ -169,13 +169,13 @@ class OnlineGP:
 
         new_inv_chol = inv(cholesky(covmat))
 
-        l = len(self.inv_chol)
+        size = len(self.inv_chol)
         self.inv_chol.grow_by((len(x), len(x)))
-        self.inv_chol[:l, l:] = 0.0
-        self.inv_chol[l:, :l] = -np.dot(
-            np.dot(new_inv_chol, proj), self.inv_chol[:l, :l]
+        self.inv_chol[:size, size:] = 0.0
+        self.inv_chol[size:, :size] = -np.dot(
+            np.dot(new_inv_chol, proj), self.inv_chol[:size, :size]
         )
-        self.inv_chol[l:, l:] = new_inv_chol
+        self.inv_chol[size:, size:] = new_inv_chol
         del self.inv_cov_matrix
 
     def predict(self, x, what=("mean",)):

@@ -13,11 +13,9 @@ jobs:
       matrix:
         check:
           - name: Check code-formatting
-            run: poetry run black --check .
-          - name: Check import sorting
-            run: poetry run isort --check-only .
-          - name: pylint
-            run: poetry run pylint goppy
+            run: poetry run ruff format --check .
+          - name: Lint
+            run: poetry run ruff check
     steps:
       - uses: actions/checkout@v4
       - run: git fetch --no-tags --prune --depth=1 origin +refs/heads/main:refs/remotes/origin/main
